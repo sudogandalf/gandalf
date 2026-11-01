@@ -216,7 +216,7 @@ export function SiteHeader() {
             <AsciiHero mode="field" fps={10} speed={0.18} />
           </div>
 
-          <div className="relative mx-auto flex h-full w-full max-w-[1200px] flex-col px-5 pt-24 pb-8 sm:px-8">
+          <div className="relative mx-auto flex h-full w-full min-w-0 max-w-[1200px] flex-col px-5 pt-24 pb-8 sm:px-8">
             <p className="font-mono text-[0.625rem] tracking-[0.24em] text-white/35 uppercase">
               [ Menu ]
             </p>

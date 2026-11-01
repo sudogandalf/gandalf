@@ -285,7 +285,7 @@ function Hero() {
 
         <div aria-hidden="true" className="hero-scrim" />
 
-        <div className="hero-copy relative mx-auto w-full max-w-[1200px] px-5 sm:px-8">
+        <div className="hero-copy relative mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
         <Rise>
           <p className="eyebrow flex items-center gap-3 text-white/80">
             <span aria-hidden="true" className="dot-glow size-1.5 rounded-full" />
@@ -363,7 +363,7 @@ function Services() {
       id="services"
       className="flex min-h-svh flex-col justify-center py-20 sm:py-28 lg:py-32"
     >
-      <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
+      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
         <AsciiRule index="01" label="services" />
         <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
           <Reveal>
@@ -484,7 +484,7 @@ function Process() {
       id="process"
       className="flex min-h-svh flex-col justify-center py-20 sm:py-28 lg:py-32"
     >
-      <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
+      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
         <AsciiRule index="02" label="process" />
         <Reveal>
           <div className="mt-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
@@ -545,7 +545,7 @@ function Principles() {
         <AsciiHero mode="field" fps={10} speed={0.25} {...GREY_FIELD} />
       </div>
 
-      <div className="relative mx-auto max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
+      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
         <AsciiRule index="03" label="principles" />
         <Reveal>
           <h2 className="display mt-12 max-w-4xl text-[clamp(1.9rem,4.4vw,3.25rem)]">
@@ -585,7 +585,7 @@ function Contact() {
         <AsciiHero mode="field" fps={10} {...SECTION_FIELD} />
       </div>
 
-      <div className="relative mx-auto max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
+      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
         <AsciiRule index="04" label="contact" />
         <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <Reveal>
@@ -639,7 +639,7 @@ function Footer() {
 
   return (
     <footer>
-      <div className="mx-auto max-w-[1200px] px-5 py-12 sm:px-8 sm:py-14">
+      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 py-12 sm:px-8 sm:py-14">
         <AsciiRule index="05" label="gandalf" />
         <div className="mt-12 flex flex-col justify-between gap-10 sm:flex-row">
           <div className="max-w-xs">
