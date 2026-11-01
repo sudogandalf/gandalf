@@ -1,0 +1,962 @@
+/* ---------------------------------------------------------------------------
+   Gandalf — site styles
+   Small on purpose: Tailwind handles layout, this file owns the keyframes and
+   the scroll-reveal choreography. The hero's ASCII texture is drawn by
+   <AsciiHero> on a canvas, so there is no ASCII CSS here.
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* The whole site is a black surface now, so the text ramp runs from white
+     downwards instead of from near-black upwards. */
+  --surface: #000000;
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.82);
+  --body: rgba(255, 255, 255, 0.68);
+  --muted: rgba(255, 255, 255, 0.58);
+  --faint: rgba(255, 255, 255, 0.46);
+  --faint-dim: rgba(255, 255, 255, 0.36);
+  --line: rgba(255, 255, 255, 0.14);
+  --line-soft: rgba(255, 255, 255, 0.1);
+  --line-faint: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.3);
+
+  /* Solid controls invert against the surface: white plate, black label. */
+  --solid-bg: #ffffff;
+  --solid-fg: #000000;
+
+  /* A small radius for bordered UI — buttons, chips, framed panels. Deliberately
+     small: the square corners are part of the terminal identity, so this only
+     takes the hard edge off. Hairlines and section rules stay square. */
+  --radius-ui: 4px;
+
+  /* Hero band — now the same black as every other section, so the hero is set
+     apart by its ASCII field rather than by a different background. */
+  --band: #000000;
+
+  /* Accent — a cool blue. Used as a glow only, never as a flat fill, so it
+     reads as light rather than as a second brand colour. */
+  --glow-blue: 96, 165, 250;
+  --glow-ice: 165, 205, 255;
+  --glow: rgb(var(--glow-blue));
+}
+
+html {
+  /* Deliberately `auto`, not `smooth`: anchor scrolling is driven by
+     useSmoothAnchors so the duration can be capped and the sticky header
+     offset respected. Leaving this as `smooth` would make the browser
+     animate the same scroll a second time. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--surface);
+  color: var(--ink);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+/* Headlines: tight, optically balanced. */
+.display {
+  font-weight: 500;
+  letter-spacing: -0.045em;
+  line-height: 0.94;
+}
+
+.eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------------------------------------------------------------------------
+   ASCII decode reveal
+   The base copy reserves the exact final layout — including line wrapping —
+   and is never painted. The animating copy is laid over it, so the scramble
+   cannot reflow the page and the settled state is pixel-identical.
+   --------------------------------------------------------------------------- */
+
+.ascii-decode {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.ascii-decode-base {
+  visibility: hidden;
+}
+
+.ascii-decode-live {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   Mobile bleed
+   On phones the section frame meets the screen: rules and dividers run edge to
+   edge, so the screen edge itself becomes the side border. Applied to frame
+   elements only — the copy inside keeps its inset via padding, so text never
+   touches the glass.
+   --------------------------------------------------------------------------- */
+
+@media (max-width: 639px) {
+  .bleed {
+    margin-inline: -1.25rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   ASCII motif — the rules, brackets and marks that carry the terminal theme
+   through the light sections. Shared monospace stack so every motif matches.
+   --------------------------------------------------------------------------- */
+
+.eyebrow-mark,
+.ascii-rule,
+.ascii-wizard {
+  font-family: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular",
+    "Consolas", "Liberation Mono", monospace;
+  /* Ligatures off: JetBrains Mono would otherwise merge character pairs like
+     `->` into one glyph, which breaks the column alignment of the ASCII art. */
+  font-variant-ligatures: none;
+}
+
+/* The Services Gandalf: the drawing, a halo, and the motes around him. */
+.gandalf-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+/* A soft accent halo behind the figure, so the motes sit in something and the
+   drawing reads as lit rather than pasted onto the black. */
+.gandalf-glow {
+  position: absolute;
+  /* Horizontal inset stays at 0: a negative one pushes the halo past the
+     container and gives the whole page a horizontal scrollbar on phones.
+     The blur softens the edge instead. */
+  inset: -16% 0;
+  z-index: -1;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--glow-blue), 0.17),
+    rgba(var(--glow-blue), 0.05) 55%,
+    transparent 78%
+  );
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Small blue motes floating around him. Positions and timings are inline, so
+   the scatter is fixed data rather than something re-rolled each render. */
+.gandalf-mote {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgb(var(--glow-blue));
+  box-shadow:
+    0 0 5px rgba(var(--glow-blue), 0.95),
+    0 0 12px rgba(var(--glow-blue), 0.5);
+  animation: mote-float var(--mote-duration, 7s) ease-in-out infinite;
+  animation-delay: var(--mote-delay, 0s);
+  pointer-events: none;
+}
+
+@keyframes mote-float {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    opacity: 1;
+    transform: translate3d(var(--mote-dx, 6px), var(--mote-dy, -10px), 0);
+  }
+}
+
+/* The Services Gandalf. 29 rows of fine line-art, so it wants a much
+   smaller size than the short drawings elsewhere: the detail comes from the
+   row count and the character density, not from the type size. */
+.ascii-wizard {
+  margin: 0;
+  font-size: clamp(0.46rem, 0.8vw, 0.72rem);
+  line-height: 1.15;
+  letter-spacing: 0;
+  white-space: pre;
+  color: var(--faint-dim);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.eyebrow-mark {
+  color: var(--faint-dim);
+}
+
+/* A C-style comment rule stretched to the container width. The dash run is a
+   long literal clipped by the fill span, so it reaches the right edge without
+   any measuring in JS. */
+.ascii-rule {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  color: var(--faint-dim);
+  user-select: none;
+}
+
+.ascii-rule-fill {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* The Services piece: no frame, no panel — the drawing should read as a
+ * constellation in space, so its edges dissolve into the black rather than
+ * stopping at a rule.
+ *
+ * Two elements, deliberately. `.svc-art` carries the parallax and the wordmark;
+ * `.svc-art-stage` carries the crop, the mask and the glow. They cannot be one
+ * element, because the mask fades the top edge to nothing — which is exactly
+ * where the wordmark sits, so a shared mask would erase the word.
+ *
+ * The crop exists to hide the piece's own printed equations. They sit in its
+ * top rows and cannot be switched off: the library's `look` and `chars`
+ * attributes restyle the SHADING only, and text is always drawn. So
+ * `--art-crop` has to track both the piece's row height (about 1.13 × its font
+ * size) and the `sizes` passed to <AsciiArt> below — change one and this must
+ * change with it. Three rows at each breakpoint.
+ *
+ * The mask is sized 50% 50% so its transparent stop lands exactly on the box
+ * edges. Filters are applied before masks, so the glow fades with the glyphs
+ * instead of being clipped off at full strength. */
+.svc-art {
+  position: relative;
+  /* Written by useParallax; a compositor-only transform, so the scroll effect
+     never triggers layout. */
+  transform: translate3d(0, var(--parallax, 0px), 0);
+  /* A hair blue rather than pure white, so the glow reads as the drawing's own
+     light instead of a filter laid over it. */
+  color: rgba(216, 232, 255, 0.92);
+}
+
+.svc-art-stage {
+  --art-crop: 24px;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(
+    50% 50% at 50% 50%,
+    #000 58%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(50% 50% at 50% 50%, #000 58%, transparent 100%);
+}
+
+/* The wordmark, centred on both axes over the constellation. It needs no
+   scrim: the mask has already faded that part of the drawing to black. */
+.svc-art-word {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  font-size: clamp(2.25rem, 7vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  /* A hair blue rather than pure white, so the glow reads as the drawing's own
+     light instead of a filter laid over it. */
+  color: rgba(216, 232, 255, 0.92);
+  /* The blue bloom, plus a tight pass that pulls the letters off the densest
+     part of the drawing — the middle of the attractor is where the filaments
+     overlap most. */
+  text-shadow:
+    0 0 26px rgba(var(--glow-blue), 0.45),
+    0 0 10px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  user-select: none;
+}
+
+.svc-art-stage ascii-art {
+  display: block;
+  margin-top: calc(var(--art-crop) * -1);
+  /* Two passes: a tight halo that hugs the glyphs and a wide bloom. A
+     drop-shadow follows the canvas's alpha, so only the characters glow —
+     the element's background is transparent. */
+  filter:
+    drop-shadow(0 0 12px rgba(var(--glow-blue), 0.5))
+    drop-shadow(0 0 30px rgba(var(--glow-blue), 0.22));
+}
+
+@media (min-width: 640px) {
+  .svc-art-stage {
+    --art-crop: 37px;
+  }
+}
+
+@media (min-width: 768px) {
+  .svc-art-stage {
+    --art-crop: 44px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .svc-art-stage {
+    --art-crop: 61px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .svc-art-stage {
+    --art-crop: 75px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Hero band — pure black, with the animated ASCII field behind the type.
+   --------------------------------------------------------------------------- */
+
+.hero-band {
+  position: relative;
+  /* NO `overflow: hidden` here, deliberately. This element is the scroll
+     container for the sticky panel inside it, and clipping it leaves that panel
+     with nowhere to stick — the zoom then does nothing at all while looking
+     perfectly correct in the markup. The clipping the field and the blooms need
+     happens on .hero-sticky instead. */
+  /* Flat black on purpose: no white wash lifting the centre, so the ASCII
+     field and the ambient accent blooms are the only sources of light. Every
+     rgba(255,255,255,…) glyph level reads darker against black than it did
+     against the old #262626, which is what makes the ridges read as glow. */
+  background-color: var(--band);
+}
+
+/* Scroll-zoom hero.
+
+   A tall section with a viewport-height sticky panel inside it: the panel holds
+   still while the extra height scrolls past, so that distance becomes a
+   timeline. useScrollZoom turns the progress into the variables below and
+   everything here is transform / opacity / filter, which keeps the effect on
+   the compositor — nothing re-renders React and nothing triggers layout while
+   the user scrolls.
+
+   The height here and the hook are deliberately decoupled: the hook MEASURES
+   the section rather than assuming this number, so they cannot drift apart.
+   The reduced-motion block at the end of this file overrides it, which is also
+   why the height is not an inline style — an inline value would win there. */
+.hero-scroll {
+  height: 180svh;
+}
+
+/* The panel clips its own overflow, so the field scaling up is cut off at the
+   viewport edge instead of escaping over the sections below. */
+.hero-sticky {
+  position: sticky;
+}
+
+.hero-field {
+  transform: scale(var(--hero-zoom, 1));
+  opacity: var(--hero-field-opacity, 0.9);
+  filter: blur(var(--hero-blur, 0px));
+  /* Pin the three animated properties to their own layer, so the canvas
+     underneath is not re-rastered on every scroll frame. */
+  will-change: transform, opacity, filter;
+}
+
+.hero-copy {
+  transform: translate3d(0, var(--hero-lift, 0px), 0);
+  opacity: var(--hero-copy-opacity, 1);
+  will-change: transform, opacity;
+}
+
+/* Short viewports: the hero's content plus its padding would otherwise spill
+   a few pixels past 100svh. Trimming the vertical padding keeps the panel
+   exactly viewport-height instead of pushing a sliver below the fold.
+   Targets the sticky panel now that the padding lives there, not the band. */
+@media (max-height: 700px) {
+  .hero-sticky {
+    padding-top: 5.5rem;
+    padding-bottom: 2.5rem;
+  }
+}
+
+/* Scrim between the ASCII field and the hero copy, so the small print keeps
+   its contrast without flattening the texture entirely. Black rather than the
+   old #181818, which would now read as a grey haze over a black band.
+   It reaches further up than the copy block strictly needs: against a black
+   band every glyph level is higher-contrast than it was against #262626, so the
+   eyebrow at ~53% height had texture crossing it at full strength. */
+.hero-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.72) 28%,
+    rgba(0, 0, 0, 0.34) 55%,
+    rgba(0, 0, 0, 0) 82%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Ambient accent blooms — soft, heavily-blurred washes of the blue and pale
+   ice accent that drift slowly behind the hero. They give the accent
+   somewhere to live at low intensity, so the glowing ripples read as the
+   highlight rather than the only colour on screen.
+   --------------------------------------------------------------------------- */
+
+.hero-bloom {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(80px);
+  will-change: transform, opacity;
+}
+
+.bloom-blue {
+  top: -20%;
+  right: -10%;
+  width: 48vw;
+  height: 48vw;
+  max-width: 640px;
+  max-height: 640px;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--glow-blue), 0.36),
+    rgba(var(--glow-blue), 0.08) 55%,
+    transparent 74%
+  );
+  animation: bloom-drift-a 28s ease-in-out infinite;
+}
+
+.bloom-ice {
+  bottom: -28%;
+  left: -12%;
+  width: 44vw;
+  height: 44vw;
+  max-width: 580px;
+  max-height: 580px;
+  background: radial-gradient(
+    closest-side,
+    rgba(var(--glow-ice), 0.3),
+    rgba(var(--glow-ice), 0.07) 55%,
+    transparent 74%
+  );
+  animation: bloom-drift-b 34s ease-in-out infinite;
+}
+
+@keyframes bloom-drift-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(-4%, 5%, 0) scale(1.1);
+    opacity: 1;
+  }
+}
+
+@keyframes bloom-drift-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate3d(5%, -4%, 0) scale(1.12);
+    opacity: 0.95;
+  }
+}
+
+/* A small lit dot used as an accent marker. */
+.dot-glow {
+  background: var(--glow);
+  box-shadow: 0 0 10px rgba(var(--glow-blue), 0.75);
+}
+
+/* Buttons that pick up the accent as a halo on hover. */
+.btn-glow {
+  transition:
+    box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.btn-glow:hover,
+.btn-glow:focus-visible {
+  box-shadow:
+    0 0 0 1px rgba(var(--glow-blue), 0.45),
+    0 16px 44px -14px rgba(var(--glow-blue), 0.75);
+}
+
+/* ---------------------------------------------------------------------------
+   Header — white type throughout. Every surface behind it is black, so the
+   literal whites below are deliberate: do not "tidy" them into the ramping
+   tokens, which follow the page surface rather than this band.
+   --------------------------------------------------------------------------- */
+
+.site-header {
+  color: #ffffff;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color 0.45s ease,
+    border-color 0.45s ease,
+    color 0.45s ease,
+    backdrop-filter 0.45s ease;
+}
+
+.site-header.is-scrolled {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.72);
+  -webkit-backdrop-filter: saturate(180%) blur(14px);
+  backdrop-filter: saturate(180%) blur(14px);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+}
+
+.site-header .nav-link {
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
+}
+
+.site-header .nav-link:hover {
+  color: #ffffff;
+}
+
+.site-header.is-scrolled .nav-link {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.site-header.is-scrolled .nav-link:hover {
+  color: #ffffff;
+}
+
+/* Header call-to-action: a white plate with a black label. On a black site
+   that is already the inverted control, so it no longer has to flip as the
+   header changes state — it only loses its fill on hover. */
+.site-header .header-cta {
+  border: 1px solid #ffffff;
+  border-radius: var(--radius-ui);
+  background: #ffffff;
+  color: #000000;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease;
+}
+
+.site-header.is-scrolled .header-cta {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #000000;
+}
+
+.site-header .header-cta:hover,
+.site-header.is-scrolled .header-cta:hover {
+  background: transparent;
+  color: #ffffff;
+  box-shadow: 0 0 0 1px rgba(var(--glow-blue), 0.5);
+}
+
+.site-header .menu-btn {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-ui);
+  color: #ffffff;
+  transition:
+    border-color 0.4s ease,
+    color 0.4s ease;
+}
+
+.site-header.is-scrolled .menu-btn {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+}
+
+/* While the full-screen menu is open the header stays light-on-dark and
+   frameless, whatever the scroll position had styled it as. */
+.site-header.is-menu-open.is-scrolled {
+  color: #ffffff;
+  background-color: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+}
+
+.site-header.is-menu-open .nav-link,
+.site-header.is-menu-open .menu-btn {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* The full-screen menu now works at every size, so on a desktop the inline nav
+   would be a second, competing menu sitting on top of the first. The wordmark
+   and the close button stay put; the rest steps aside. `visibility` rather than
+   opacity alone, so those links also leave the tab order while hidden. */
+.site-header nav,
+.site-header .header-cta {
+  transition:
+    opacity 0.28s ease,
+    visibility 0.28s;
+}
+
+.site-header.is-menu-open nav,
+.site-header.is-menu-open .header-cta {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ---------------------------------------------------------------------------
+   ASCII details
+   --------------------------------------------------------------------------- */
+
+/* The footer wordmark, drawn rather than set. Generated from a fixed 5x5 grid
+   so every row is exactly the same width and the columns cannot drift. */
+.ascii-wordmark {
+  margin: 0;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: clamp(0.36rem, 1.35vw, 0.7rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+  color: var(--faint-dim);
+  white-space: pre;
+  user-select: none;
+}
+
+/* A terminal cursor, sitting after the sign-off line. Hard on/off rather than a
+   fade — that is what a real cursor does. */
+.cursor-block {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.85em;
+  background: var(--glow);
+  animation: cursor-blink 1.15s steps(1, end) infinite;
+}
+
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The hero's scroll hint. */
+.scroll-cue {
+  display: inline-block;
+  animation: scroll-cue 1.8s ease-in-out infinite;
+}
+
+@keyframes scroll-cue {
+  0%,
+  100% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+}
+
+/* The process reads as a pipeline: each stage trails an arrow into the next. */
+.step-flow {
+  color: var(--line-strong);
+}
+
+/* A scroll rail down the right edge, drawn in box-drawing characters. It lives
+   in the empty gutter beside the 1200px content column, so it only appears
+   where there is genuinely room for it. */
+.ascii-rail {
+  position: fixed;
+  top: 50%;
+  right: 1.5rem;
+  z-index: 30;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  transform: translateY(-50%);
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.5625rem;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 1200px of content plus a 120px gutter either side needs ~1440px before the
+   rail has anywhere to sit. */
+@media (min-width: 1440px) {
+  .ascii-rail {
+    display: flex;
+  }
+}
+
+.ascii-rail > span::before {
+  content: "│";
+}
+
+.ascii-rail > span[data-state="todo"] {
+  color: var(--line-soft);
+}
+
+.ascii-rail > span[data-state="done"] {
+  color: var(--faint-dim);
+}
+
+/* The reading itself. Accent stays a glow rather than a fill, as everywhere
+   else on the site. */
+.ascii-rail > span[data-state="at"] {
+  color: var(--glow);
+  text-shadow: 0 0 9px rgba(var(--glow-blue), 0.85);
+}
+
+.ascii-rail > span[data-state="at"]::before {
+  content: "<";
+}
+
+/* ---------------------------------------------------------------------------
+   On-load rise — used inside the hero, where content must be visible
+   immediately and must NOT depend on scroll position or an observer.
+   --------------------------------------------------------------------------- */
+
+.hero-rise {
+  animation: hero-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scroll reveal
+   Elements start slightly low and transparent; the observer in <Reveal>
+   adds `.is-visible`. Stagger comes from --reveal-delay.
+   --------------------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------------
+   Links & cards
+   --------------------------------------------------------------------------- */
+
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* On a service line the title and arrow light up together, so the whole row
+   reads as one target rather than only the arrow doing the work. */
+.svc-item .svc-arrow {
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s ease;
+}
+
+.svc-item h3 {
+  transition: color 0.4s ease;
+}
+
+.svc-item:hover .svc-arrow,
+.svc-item:focus-visible .svc-arrow {
+  transform: translate(3px, -3px);
+  color: var(--glow);
+}
+
+.svc-item:hover h3,
+.svc-item:focus-visible h3 {
+  color: var(--glow);
+}
+
+/* Keyboard focus for the whole row — marked in the accent, matching hover. */
+.svc-item:focus-visible {
+  outline: 2px solid var(--glow);
+  outline-offset: 4px;
+}
+
+/* Service tags: plain monospace, middot-separated. The bordered pills this
+   replaced added eighteen small boxes to a section that only needed one quiet
+   line of text under each description. */
+.svc-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0;
+  font-family: "JetBrains Mono Variable", ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.svc-tags li + li::before {
+  content: "·";
+  margin: 0 0.55rem;
+  color: var(--line-strong);
+}
+
+/* ---------------------------------------------------------------------------
+   Full-screen mobile menu
+   --------------------------------------------------------------------------- */
+
+/* Painted in the page's dark band colour, covering everything under the header
+   (which stays above it at z-50 so the close button is always reachable). */
+.menu-overlay {
+  background-color: var(--band);
+  animation: menu-fade 0.32s ease both;
+}
+
+@keyframes menu-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Each row rises in on its own delay, so the list assembles rather than
+   appearing all at once. The order is set by --menu-delay at the call site. */
+.menu-item {
+  animation: menu-item-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--menu-delay, 0ms);
+}
+
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The row's right arrow is the affordance that says it leads somewhere: it
+   nudges further right and warms to the accent on hover, focus or tap. */
+.menu-arrow {
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.45s ease;
+}
+
+.menu-item:hover .menu-arrow,
+.menu-item:focus-visible .menu-arrow,
+.menu-item:active .menu-arrow {
+  transform: translateX(6px);
+  color: var(--glow);
+}
+
+/* ---------------------------------------------------------------------------
+   Reduced motion: hold everything still.
+   --------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .hero-bloom {
+    animation: none !important;
+  }
+
+  .hero-rise {
+    animation: none;
+  }
+
+  .menu-overlay,
+  .menu-item {
+    animation: none;
+  }
+
+  .cursor-block,
+  .scroll-cue {
+    animation: none;
+  }
+
+  /* Motes stay visible, they just stop moving. */
+  .gandalf-mote {
+    animation: none;
+    opacity: 0.7;
+  }
+
+  .menu-arrow {
+    transition: none;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* The zoom's timeline gets no substitute: collapse the section back to a
+     single screen and unstick the panel, so nobody who asked for less motion
+     has to scroll through dead distance. The hook bails at the same time, so
+     every layer keeps its resting value and the hero renders flat. */
+  .hero-scroll {
+    height: 100svh;
+  }
+
+  .hero-sticky {
+    position: relative;
+  }
+
+  .svc-item:hover .svc-arrow,
+  .svc-item:focus-visible .svc-arrow {
+    transform: none;
+  }
+}
