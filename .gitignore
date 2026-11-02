@@ -31,3 +31,6 @@ dist-ssr
 
 # typescript
 *.tsbuildinfo
+
+# taste-skill inspector output (screenshots, report.json) — working files, not source
+.taste-skill/
