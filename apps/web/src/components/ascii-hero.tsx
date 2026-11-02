@@ -20,7 +20,17 @@ import { cn } from "@workspace/ui/lib/utils"
  *   - the font stack falls back to the app's `--font-sans` (Geist)
  */
 
-const RAMP = " .:-=+*#%@"
+/**
+ * Density ramp, least ink to most.
+ *
+ * Kept short on purpose. The full ten-step ramp (` .:-=+*#%@`) puts heavy
+ * glyphs like `#` and `%` on the ridges, which reads as noise at hero size —
+ * the field looked like static rather than a wave. Four steps carry the same
+ * information: the wave is legible from the ink levels, and the character only
+ * needs to say "more" or "less". The result is a fine stipple with the ridges
+ * picking up the accent, which is the cleaner texture the hero wanted.
+ */
+const RAMP = " .:+"
 
 /**
  * Quantised ink levels keep canvas state changes cheap. The ramp runs from a
@@ -42,7 +52,7 @@ const DEFAULT_GLOW_BLUR = 7
  *  row count) rather than its width is what keeps the ripple texture identical
  *  across viewports — a portrait phone then shows the same pattern as a wide
  *  desktop, just with fewer characters across. */
-const FIELD_ROWS = 24
+const FIELD_ROWS = 18
 
 type Mode = "wordmark" | "field"
 
@@ -51,19 +61,20 @@ type Mode = "wordmark" | "field"
  * Each one emits a set of concentric rings; more sources means more ripples
  * on screen, while RIPPLE_FREQ sets how far apart the rings sit (lower =
  * bigger ripples).
+ *
+ * Four sources rather than seven: the extra three crowded the middle of the
+ * band and turned the wave into interference. Fewer, further apart, and the
+ * pattern reads as ripples again.
  */
 const RIPPLES = [
   { x: 0.2, y: 0.26, phase: 0.0 },
   { x: 0.6, y: 0.14, phase: 1.7 },
   { x: 0.87, y: 0.42, phase: 3.1 },
   { x: 0.37, y: 0.6, phase: 0.9 },
-  { x: 0.72, y: 0.79, phase: 2.4 },
-  { x: 0.09, y: 0.83, phase: 4.0 },
-  { x: 0.48, y: 0.4, phase: 5.2 },
 ]
 
 /** Ring spacing = 2π / RIPPLE_FREQ (in band-height units). Lower = bigger. */
-const RIPPLE_FREQ = 34
+const RIPPLE_FREQ = 26
 /** How fast the rings expand outward, in radians per second. */
 const RIPPLE_SPEED = 1.1
 

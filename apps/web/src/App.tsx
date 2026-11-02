@@ -302,15 +302,11 @@ function Hero() {
         <div aria-hidden="true" className="hero-scrim" />
 
         <div className="hero-copy relative mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
-        <Rise>
-          <p className="eyebrow flex items-center gap-3 text-white/80">
-            <span aria-hidden="true" className="dot-glow size-1.5 rounded-full" />
-            <AsciiDecode text="Gandalf · software & infrastructure" delay={120} />
-          </p>
-        </Rise>
-
+        {/* No eyebrow above the title. It read "Gandalf · software &
+            infrastructure" directly above the word GANDALF, which is the same
+            information twice, and the direction sheet bans kickers outright. */}
         <Rise delay={90}>
-          <h1 className="display mt-4 text-[clamp(2.9rem,12vw,8.5rem)] text-white">
+          <h1 className="display text-[clamp(2.9rem,12vw,8.5rem)] text-white">
             <AsciiDecode text="GANDALF" duration={1100} delay={200} />
           </h1>
         </Rise>
@@ -358,11 +354,10 @@ function Hero() {
               {/* The strip ends with an ASCII hint that there is more below the
                   fold. Kept on this line so the hero stays exactly one
                   viewport tall. */}
-              <p className="mt-6 flex items-center gap-3 text-[0.6875rem] tracking-[0.22em] text-white/35 uppercase">
-                <AsciiDecode
-                  text="Websites & apps · Domains · SSL · Email · cPanel"
-                  delay={620}
-                />
+              {/* Just the cue. The strip that sat here listed the services a
+                  fourth time (hero, section, menu and footer already carried
+                  them), and the hero is meant to say one thing. */}
+              <p className="mt-10 flex items-center">
                 <span aria-hidden="true" className="scroll-cue">
                   ↓
                 </span>

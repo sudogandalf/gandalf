@@ -678,12 +678,6 @@ body {
   }
 }
 
-/* A small lit dot used as an accent marker. */
-.dot-glow {
-  background: var(--glow);
-  box-shadow: 0 0 10px rgba(var(--glow-blue), 0.75);
-}
-
 /* Buttons that pick up the accent as a halo on hover. */
 .btn-glow {
   transition:
