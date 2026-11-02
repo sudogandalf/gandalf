@@ -10,10 +10,13 @@
      downwards instead of from near-black upwards. */
   --surface: #000000;
   --ink: #ffffff;
-  --ink-soft: rgba(255, 255, 255, 0.82);
-  --body: rgba(255, 255, 255, 0.68);
-  --muted: rgba(255, 255, 255, 0.58);
-  --faint: rgba(255, 255, 255, 0.46);
+  /* Running text sits in the full ink, not in soft grey: a page whose body copy
+     is greyed reads unfinished. The dimmer steps below are for the ASCII
+     texture and for secondary notes only. */
+  --ink-soft: rgba(255, 255, 255, 0.9);
+  --body: rgba(255, 255, 255, 0.88);
+  --muted: rgba(255, 255, 255, 0.78);
+  --faint: rgba(255, 255, 255, 0.5);
   --faint-dim: rgba(255, 255, 255, 0.36);
   --line: rgba(255, 255, 255, 0.14);
   --line-soft: rgba(255, 255, 255, 0.1);
@@ -68,10 +71,13 @@ body {
 }
 
 /* Headlines: tight, optically balanced. */
+/* Display type: the dealt face at weight 800 with the type system's own
+   tracking and leading, which are tuned to Cabinet Grotesk rather than carried
+   over from the monospace it replaces. */
 .display {
-  font-weight: 500;
-  letter-spacing: -0.045em;
-  line-height: 0.94;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
 }
 
 .eyebrow {
@@ -125,8 +131,7 @@ body {
    --------------------------------------------------------------------------- */
 
 .eyebrow-mark,
-.ascii-rule,
-.ascii-wizard {
+.ascii-rule {
   font-family: "JetBrains Mono Variable", ui-monospace, "SFMono-Regular",
     "Consolas", "Liberation Mono", monospace;
   /* Ligatures off: JetBrains Mono would otherwise merge character pairs like
@@ -185,16 +190,21 @@ body {
   }
 }
 
-/* The Services Gandalf. 29 rows of fine line-art, so it wants a much
-   smaller size than the short drawings elsewhere: the detail comes from the
-   row count and the character density, not from the type size. */
-.ascii-wizard {
-  margin: 0;
-  font-size: clamp(0.46rem, 0.8vw, 0.72rem);
-  line-height: 1.15;
-  letter-spacing: 0;
-  white-space: pre;
-  color: var(--faint-dim);
+/* The Gandalf figure.
+ *
+ * A raster of ASCII characters rather than live text: the source is a JPEG, so
+ * it was cropped to its ink and its luminance converted to alpha, which gives
+ * white ink on transparency and drops the JPEG's grey fringing into the page's
+ * own black. The intrinsic size is carried on the element so the box is
+ * reserved before the image loads.
+ *
+ * Sized by width with a locked aspect ratio, so it scales with the viewport
+ * rather than needing a per-breakpoint font size the way the drawn art did. */
+.gandalf-art {
+  display: block;
+  width: clamp(170px, 23vw, 330px);
+  height: auto;
+  opacity: 0.92;
   user-select: none;
   -webkit-user-select: none;
 }

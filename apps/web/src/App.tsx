@@ -1,7 +1,7 @@
 import { AsciiDecode } from "@/components/ascii-decode"
 import { AsciiHero } from "@/components/ascii-hero"
 import { AsciiArt } from "@/components/ascii-art"
-import { GANDALF_ART } from "@/components/ascii-gandalf"
+import gandalfArt from "@/assets/gandalf.png"
 import { AsciiRail } from "@/components/ascii-rail"
 import { useParallax } from "@/components/parallax"
 import { Reveal } from "@/components/reveal"
@@ -224,10 +224,11 @@ const GANDALF_MOTES = [
 /**
  * Gandalf, drawn in ASCII, with blue motes drifting around him.
  *
- * The art itself lives in its own module because it is a generated string
- * literal — see `components/ascii-gandalf.tsx`.
+ * The figure is a PNG of character art rather than live text: it arrived as a
+ * JPEG of rendered ASCII, so it was cropped to its ink and its luminance turned
+ * into alpha. See the note on `.gandalf-art` in site.css.
  */
-function AsciiWizard() {
+function GandalfFigure() {
   return (
     <div className="gandalf-stage shrink-0 self-center lg:self-end">
       <span aria-hidden="true" className="gandalf-glow" />
@@ -250,9 +251,14 @@ function AsciiWizard() {
           }
         />
       ))}
-      <pre aria-hidden="true" className="ascii-wizard">
-        {GANDALF_ART}
-      </pre>
+      <img
+        src={gandalfArt}
+        alt=""
+        aria-hidden="true"
+        width={440}
+        height={538}
+        className="gandalf-art"
+      />
     </div>
   )
 }
@@ -312,7 +318,7 @@ function Hero() {
 
           <Rise delay={290}>
             <div className="lg:pb-1">
-              <p className="max-w-md text-[0.9375rem] leading-relaxed text-white/55">
+              <p className="max-w-md text-base leading-relaxed text-white/55">
                 Gandalf designs and builds websites and applications, then keeps
                 them online — domains, SSL, business email and cPanel hosting,
                 all handled by the same team.
@@ -337,7 +343,7 @@ function Hero() {
               {/* The strip ends with an ASCII hint that there is more below the
                   fold. Kept on this line so the hero stays exactly one
                   viewport tall. */}
-              <p className="mt-6 flex items-center gap-3 text-[0.625rem] tracking-[0.22em] text-white/35 uppercase">
+              <p className="mt-6 flex items-center gap-3 text-[0.6875rem] tracking-[0.22em] text-white/35 uppercase">
                 <AsciiDecode
                   text="Websites & apps · Domains · SSL · Email · cPanel"
                   delay={620}
@@ -369,7 +375,7 @@ function Services() {
           <Reveal>
             <div className="max-w-2xl">
               <Eyebrow>Services</Eyebrow>
-              <h2 className="display mt-5 text-[clamp(2rem,4.6vw,3.5rem)]">
+              <h2 className="display mt-5 text-[clamp(1.6rem,4.6vw,3.5rem)]">
                 <AsciiDecode text="One contract." />
                 <br />
                 <span className="text-[var(--body)]">
@@ -380,7 +386,7 @@ function Services() {
           </Reveal>
 
           <Reveal delay={140}>
-            <AsciiWizard />
+            <GandalfFigure />
           </Reveal>
         </div>
 
@@ -391,7 +397,7 @@ function Services() {
                 <h3 className="text-lg font-medium tracking-[-0.02em]">
                   We design and build
                 </h3>
-                <span className="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
+                <span className="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
                   Software
                 </span>
               </div>
@@ -399,7 +405,7 @@ function Services() {
                 {BUILD_ITEMS.map((item) => (
                   <li
                     key={item}
-                    className="bleed flex items-baseline gap-4 border-b border-[var(--line-soft)] px-5 py-4 text-[0.95rem] text-[var(--ink-soft)] sm:px-0"
+                    className="bleed flex items-baseline gap-4 border-b border-[var(--line-soft)] px-5 py-4 text-base text-[var(--ink-soft)] sm:px-0"
                   >
                     <span
                       aria-hidden="true"
@@ -411,7 +417,7 @@ function Services() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-[0.8125rem] leading-relaxed text-[var(--faint)]">
+              <p className="mt-5 text-base leading-relaxed text-[var(--faint)]">
                 Interfaces that stay legible, code that stays maintainable, and
                 a deploy you can repeat without drama.
               </p>
@@ -424,7 +430,7 @@ function Services() {
                 <h3 className="text-lg font-medium tracking-[-0.02em]">
                   We run and maintain
                 </h3>
-                <span className="font-mono text-[0.625rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
+                <span className="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
                   Infrastructure
                 </span>
               </div>
@@ -432,7 +438,7 @@ function Services() {
                 {HOST_ITEMS.map((item) => (
                   <li
                     key={item}
-                    className="bleed flex items-baseline gap-4 border-b border-[var(--line-soft)] px-5 py-4 text-[0.95rem] text-[var(--ink-soft)] sm:px-0"
+                    className="bleed flex items-baseline gap-4 border-b border-[var(--line-soft)] px-5 py-4 text-base text-[var(--ink-soft)] sm:px-0"
                   >
                     <span
                       aria-hidden="true"
@@ -444,7 +450,7 @@ function Services() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-[0.8125rem] leading-relaxed text-[var(--faint)]">
+              <p className="mt-5 text-base leading-relaxed text-[var(--faint)]">
                 Everything registered in your name, renewals tracked, and a
                 certificate that never surprises you at 3am.
               </p>
@@ -490,11 +496,11 @@ function Process() {
           <div className="mt-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
             <div className="max-w-xl">
               <Eyebrow>Process</Eyebrow>
-              <h2 className="display mt-5 text-[clamp(2rem,4.6vw,3.5rem)]">
+              <h2 className="display mt-5 text-[clamp(1.6rem,4.6vw,3.5rem)]">
                 <AsciiDecode text="How the work happens." />
               </h2>
             </div>
-            <p className="max-w-xs text-[0.8125rem] leading-relaxed text-[var(--faint)]">
+            <p className="max-w-xs text-base leading-relaxed text-[var(--faint)]">
               Four stages, each with something concrete to show for it. You
               always know where the project stands.
             </p>
@@ -521,7 +527,7 @@ function Process() {
                 <h3 className="mt-5 text-[1.15rem] font-medium tracking-[-0.02em]">
                   {step.title}
                 </h3>
-                <p className="mt-3 max-w-[26ch] text-[0.875rem] leading-relaxed text-[var(--muted)]">
+                <p className="mt-3 max-w-[26ch] text-base leading-relaxed text-[var(--muted)]">
                   {step.body}
                 </p>
               </div>
@@ -548,7 +554,7 @@ function Principles() {
       <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
         <AsciiRule index="03" label="principles" />
         <Reveal>
-          <h2 className="display mt-12 max-w-4xl text-[clamp(1.9rem,4.4vw,3.25rem)]">
+          <h2 className="display mt-12 max-w-4xl text-[clamp(1.5rem,4.4vw,3.25rem)]">
             <AsciiDecode text="One team, from the first commit to the renewal date." />
           </h2>
         </Reveal>
@@ -560,7 +566,7 @@ function Principles() {
                 <h3 className="text-[1.05rem] font-medium tracking-[-0.02em]">
                   {item.title}
                 </h3>
-                <p className="mt-3 text-[0.875rem] leading-relaxed text-[var(--muted)]">
+                <p className="mt-3 text-base leading-relaxed text-[var(--muted)]">
                   {item.body}
                 </p>
               </div>
@@ -599,7 +605,7 @@ function Contact() {
 
           <Reveal delay={120}>
             <div className="lg:pb-2">
-              <p className="max-w-md text-[0.95rem] leading-relaxed text-[var(--body)]">
+              <p className="max-w-md text-base leading-relaxed text-[var(--body)]">
                 Send a short description — what it does, who it&apos;s for and
                 roughly when you need it. We&apos;ll reply with the next step,
                 usually within one business day.
@@ -643,11 +649,11 @@ function Footer() {
         <AsciiRule index="05" label="gandalf" />
         <div className="mt-12 flex flex-col justify-between gap-10 sm:flex-row">
           <div className="max-w-xs">
-            <div className="flex items-center gap-2 text-[0.95rem] font-semibold tracking-[-0.02em]">
+            <div className="flex items-center gap-2 text-base font-semibold tracking-[-0.02em]">
               <span aria-hidden="true" className="inline-block size-2.5 bg-[var(--ink)]" />
               <span>GANDALF</span>
             </div>
-            <p className="mt-4 text-[0.8125rem] leading-relaxed text-[var(--faint)]">
+            <p className="mt-4 text-base leading-relaxed text-[var(--faint)]">
               Software development, domains, SSL, business email and cPanel
               hosting.
             </p>
@@ -655,10 +661,10 @@ function Footer() {
 
           <div className="grid grid-cols-2 gap-x-12 gap-y-8 sm:gap-x-20">
             <div>
-              <p className="text-[0.625rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
+              <p className="text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
                 Services
               </p>
-              <ul className="mt-4 space-y-2.5 text-[0.8125rem] text-[var(--body)]">
+              <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
                 <li>Websites &amp; apps</li>
                 <li>Domains</li>
                 <li>SSL certificates</li>
@@ -666,10 +672,10 @@ function Footer() {
               </ul>
             </div>
             <div>
-              <p className="text-[0.625rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
+              <p className="text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
                 Company
               </p>
-              <ul className="mt-4 space-y-2.5 text-[0.8125rem] text-[var(--body)]">
+              <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
                 <li>
                   <a href="#process" className="link-underline">
                     Process
