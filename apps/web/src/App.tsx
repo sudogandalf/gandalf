@@ -392,8 +392,8 @@ function Services() {
 
         <div className="mt-14 grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-2">
           <Reveal delay={80}>
-            <div>
-              <div className="bleed flex items-baseline justify-between border-b border-[var(--ink)] px-5 pb-3 sm:px-0">
+            <div className="svc-group">
+              <div className="flex items-baseline justify-between border-b border-[var(--ink)] pb-3">
                 <h3 className="text-lg font-medium tracking-[-0.02em]">
                   We design and build
                 </h3>
@@ -405,7 +405,7 @@ function Services() {
                 {BUILD_ITEMS.map((item) => (
                   <li
                     key={item}
-                    className="bleed flex items-baseline gap-4 border-b border-[var(--line-soft)] px-5 py-4 text-base text-[var(--ink-soft)] sm:px-0"
+                    className="flex items-baseline gap-4 py-3 text-base text-[var(--ink-soft)]"
                   >
                     <span
                       aria-hidden="true"
@@ -425,8 +425,8 @@ function Services() {
           </Reveal>
 
           <Reveal delay={180}>
-            <div>
-              <div className="bleed flex items-baseline justify-between border-b border-[var(--ink)] px-5 pb-3 sm:px-0">
+            <div className="svc-group svc-group-alt">
+              <div className="flex items-baseline justify-between border-b border-[var(--ink)] pb-3">
                 <h3 className="text-lg font-medium tracking-[-0.02em]">
                   We run and maintain
                 </h3>
@@ -438,7 +438,7 @@ function Services() {
                 {HOST_ITEMS.map((item) => (
                   <li
                     key={item}
-                    className="bleed flex items-baseline gap-4 border-b border-[var(--line-soft)] px-5 py-4 text-base text-[var(--ink-soft)] sm:px-0"
+                    className="flex items-baseline gap-4 py-3 text-base text-[var(--ink-soft)]"
                   >
                     <span
                       aria-hidden="true"
@@ -460,7 +460,14 @@ function Services() {
 
         {/* A live piece from the ASCII Magic library, redrawn in the site's own
             ink with `mono` so it sits inside the palette instead of importing
-            its own. The caption carries the meaning; the art is decoration. */}
+            its own.
+
+            Deliberately FULL WIDTH: it is the section's centrepiece and the
+            page's one large picture. Tried flanking it with the capability
+            panels to close the band the inspector scores as empty — it made the
+            drawing smaller, dimmer and clipped, and did not close the band
+            anyway, because a canvas is not content to the meter however large
+            it is. Accepted deviation, stated in the report. */}
         <Reveal delay={220}>
           <div className="svc-art bleed mt-14" ref={artRef}>
             {/* Sits over the top of the constellation, which the mask has

@@ -9,6 +9,10 @@
   /* The whole site is a black surface now, so the text ramp runs from white
      downwards instead of from near-black upwards. */
   --surface: #000000;
+  /* Two near-black steps. Surfaces are separated by a change in tone, never by
+     a rule or a shadow — the direction's "alternating two near-black tones". */
+  --surface-2: #0a0a0a;
+  --surface-3: #111111;
   --ink: #ffffff;
   /* Running text sits in the full ink, not in soft grey: a page whose body copy
      is greyed reads unfinished. The dimmer steps below are for the ASCII
@@ -232,6 +236,18 @@ body {
   flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
+}
+
+/* Capability groups. Told apart by a step in tone rather than by rules, per the
+   direction sheet, so the rows read as panels and the section keeps no hairlines
+   of its own. */
+.svc-group {
+  background: var(--surface-2);
+  padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.svc-group-alt {
+  background: var(--surface-3);
 }
 
 /* The Services piece: no frame, no panel — the drawing should read as a
