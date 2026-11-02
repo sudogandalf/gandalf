@@ -546,7 +546,7 @@ function Process() {
           <Reveal delay={140}>
             <div>
               <div className="slip">
-                <p className="slip-head">Statement of work</p>
+                <p className="label-small">Statement of work</p>
 
                 {groups.map((group) => (
                   <div key={group.when} className="slip-group">
@@ -620,6 +620,21 @@ function Principles() {
   )
 }
 
+/**
+ * The contact section as display rows, per the direction sheet's blueprint: a
+ * stack of full-width bands, each pairing what the reader does with what they
+ * get, told apart by alternating tones rather than by rules.
+ */
+const CONTACT_ROWS = [
+  { key: "Write to us", value: EMAIL, href: `mailto:${EMAIL}` },
+  {
+    key: "Tell us the shape",
+    value: "What it does, who it's for, roughly when",
+  },
+  { key: "We reply", value: "Usually within one business day" },
+  { key: "Hosted elsewhere", value: "We can migrate it" },
+]
+
 function Contact() {
   return (
     <section
@@ -635,48 +650,53 @@ function Contact() {
 
       <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
         <AsciiRule index="04" label="contact" />
-        <div className="mt-12 grid grid-cols-1 gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-          <Reveal>
-            <div>
-              <Eyebrow>Contact</Eyebrow>
-              <h2 className="display mt-5 text-[clamp(2.1rem,5.2vw,4rem)]">
-                <AsciiDecode text="Tell us what you're building." />
-              </h2>
-            </div>
-          </Reveal>
 
-          <Reveal delay={120}>
-            <div className="lg:pb-2">
-              <p className="max-w-md text-base leading-relaxed text-[var(--body)]">
-                Send a short description — what it does, who it&apos;s for and
-                roughly when you need it. We&apos;ll reply with the next step,
-                usually within one business day.
-              </p>
+        <Reveal>
+          <h2 className="display mt-12 text-[clamp(2.5rem,5vw,4.5rem)]">
+            <AsciiDecode text="Tell us what" />
+            <br />
+            <span className="text-[var(--muted)]">
+              <AsciiDecode text="you're building." delay={120} />
+            </span>
+          </h2>
+        </Reveal>
 
-              <a
-                href={`mailto:${EMAIL}`}
-                className="group mt-8 inline-flex items-baseline gap-3 text-[clamp(1.15rem,2.6vw,1.6rem)] font-medium tracking-[-0.03em]"
-              >
-                {/* Reads as a shell prompt, so the address line scans as a
-                    command rather than as decoration. */}
-                <span
-                  aria-hidden="true"
-                  className="font-mono text-[0.9rem] text-[var(--faint-dim)]"
-                >
-                  $
-                </span>
-                <span className="link-underline">
-                  <AsciiDecode text={EMAIL} delay={120} />
-                </span>
-                <ArrowUpRight className="size-4 shrink-0 text-[var(--faint-dim)] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[var(--ink)]" />
-              </a>
-
-              <p className="mt-6 text-[0.75rem] tracking-[0.14em] text-[var(--faint-dim)] uppercase">
-                Already hosted elsewhere? We can migrate it.
-              </p>
-            </div>
-          </Reveal>
+        <div className="mt-14">
+          {CONTACT_ROWS.map((row, i) => (
+            <Reveal key={row.key} delay={i * 80}>
+              {row.href ? (
+                <a href={row.href} className={`contact-row${i % 2 ? " contact-row-alt" : ""} group`}>
+                  <span className="contact-key">{row.key}</span>
+                  <span className="contact-value">
+                    <span className="link-underline">{row.value}</span>
+                  </span>
+                </a>
+              ) : (
+                <div className={`contact-row${i % 2 ? " contact-row-alt" : ""}`}>
+                  <span className="contact-key">{row.key}</span>
+                  <span className="contact-value">{row.value}</span>
+                </div>
+              )}
+            </Reveal>
+          ))}
         </div>
+
+        {/* The greeting row: one word at display size, with a solid round
+            button carrying the arrow — the sheet's sixth row. */}
+        <Reveal delay={340}>
+          <div className="mt-12 flex items-center gap-7">
+            <span className="display text-[clamp(2rem,4.4vw,3.75rem)]">
+              Hello
+            </span>
+            <a
+              href={`mailto:${EMAIL}`}
+              aria-label={`Email ${EMAIL}`}
+              className="contact-orb"
+            >
+              <ArrowUpRight className="size-5" />
+            </a>
+          </div>
+        </Reveal>
       </div>
     </section>
   )
@@ -686,82 +706,89 @@ function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer>
-      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 py-12 sm:px-8 sm:py-14">
+    <footer className="relative">
+      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 pt-16 sm:px-8 sm:pt-20">
         <AsciiRule index="05" label="gandalf" />
-        <div className="mt-12 flex flex-col justify-between gap-10 sm:flex-row">
-          <div className="max-w-xs">
+
+        {/* The drawn wordmark, kept from the ASCII theme, sits in the top row
+            where the direction sheet asks for it — small, not as the close. */}
+        <pre aria-hidden="true" className="ascii-wordmark mt-12">
+          {WORDMARK}
+        </pre>
+
+        <div className="mt-12 grid gap-10 sm:grid-cols-3">
+          <div>
             <div className="flex items-center gap-2 text-base font-semibold tracking-[-0.02em]">
-              <span aria-hidden="true" className="inline-block size-2.5 bg-[var(--ink)]" />
+              <span
+                aria-hidden="true"
+                className="inline-block size-2.5 bg-[var(--ink)]"
+              />
               <span>GANDALF</span>
             </div>
-            <p className="mt-4 text-base leading-relaxed text-[var(--faint)]">
+            <p className="mt-4 max-w-xs text-base leading-relaxed text-[var(--body)]">
               Software development, domains, SSL, business email and cPanel
               hosting.
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-12 gap-y-8 sm:gap-x-20">
-            <div>
-              <p className="text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
-                Services
-              </p>
-              <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
-                <li>Websites &amp; apps</li>
-                <li>Domains</li>
-                <li>SSL certificates</li>
-                <li>Email &amp; hosting</li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
-                Company
-              </p>
-              <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
-                <li>
-                  <a href="#process" className="link-underline">
-                    Process
-                  </a>
-                </li>
-                <li>
-                  <a href="#services" className="link-underline">
-                    Services
-                  </a>
-                </li>
-                <li>
-                  <a href="#contact" className="link-underline">
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a href={`mailto:${EMAIL}`} className="link-underline">
-                    Email us
-                  </a>
-                </li>
-              </ul>
-            </div>
+          <div>
+            <p className="label-small">Services</p>
+            <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
+              <li>Websites &amp; apps</li>
+              <li>Domains</li>
+              <li>SSL certificates</li>
+              <li>Email &amp; hosting</li>
+            </ul>
+          </div>
+
+          <div>
+            <p className="label-small">Company</p>
+            <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
+              <li>
+                <a href="#process" className="link-underline">
+                  Process
+                </a>
+              </li>
+              <li>
+                <a href="#services" className="link-underline">
+                  Services
+                </a>
+              </li>
+              <li>
+                <a href="#contact" className="link-underline">
+                  Contact
+                </a>
+              </li>
+              <li>
+                <a href={`mailto:${EMAIL}`} className="link-underline">
+                  Email us
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        {/* The wordmark drawn rather than set, above a terminal cursor blinking
-            after the sign-off line. */}
-        <div className="bleed mt-12 border-t border-[var(--line-soft)] px-5 pt-8 sm:px-0">
-          <pre aria-hidden="true" className="ascii-wordmark">
-            {WORDMARK}
-          </pre>
+      {/* The close: the address itself as the display line, hard against the
+          margin — the direction sheet's "contact as the headline". */}
+      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 pt-20 sm:px-8 sm:pt-28">
+        <a href={`mailto:${EMAIL}`} className="footer-mail">
+          {EMAIL}
+        </a>
+      </div>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="flex items-center gap-2 text-[0.6875rem] tracking-[0.12em] text-[var(--faint-dim)] uppercase">
-              © {year} Gandalf. All rights reserved.
-              <span aria-hidden="true" className="cursor-block" />
-            </p>
-            <a
-              href="#top"
-              className="link-underline text-[0.6875rem] tracking-[0.12em] text-[var(--faint-dim)] uppercase"
-            >
-              Back to top
-            </a>
-          </div>
+      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 pt-12 pb-10 sm:px-8">
+        <div className="flex flex-col gap-3 border-t border-[var(--line-soft)] pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-center gap-2 text-[0.6875rem] tracking-[0.12em] text-[var(--faint-dim)] uppercase">
+            © {year} Gandalf. All rights reserved.
+            <span aria-hidden="true" className="cursor-block" />
+          </p>
+          <a
+            href="#top"
+            className="link-underline text-[0.6875rem] tracking-[0.12em] text-[var(--faint-dim)] uppercase"
+          >
+            Back to top
+          </a>
         </div>
       </div>
     </footer>
