@@ -31,10 +31,10 @@
   --solid-bg: #ffffff;
   --solid-fg: #000000;
 
-  /* A small radius for bordered UI — buttons, chips, framed panels. Deliberately
-     small: the square corners are part of the terminal identity, so this only
-     takes the hard edge off. Hairlines and section rules stay square. */
-  --radius-ui: 4px;
+  /* Square corners everywhere: buttons, chips and framed panels. Sleeker than a
+     small radius and consistent with the terminal identity — the study behind
+     the direction found square corners the commoner choice on its top sites. */
+  --radius-ui: 0px;
 
   /* Hero band — now the same black as every other section, so the hero is set
      apart by its ASCII field rather than by a different background. */
@@ -238,17 +238,9 @@ body {
   overflow: hidden;
 }
 
-/* Capability groups. Told apart by a step in tone rather than by rules, per the
-   direction sheet, so the rows read as panels and the section keeps no hairlines
-   of its own. */
-.svc-group {
-  background: var(--surface-2);
-  padding: 1.5rem 1.5rem 1.75rem;
-}
-
-.svc-group-alt {
-  background: var(--surface-3);
-}
+/* Capability groups. No panels and no rules: the sheet allows the groups to be
+   told apart by "28px of space alone", and space is the more minimal of the two
+   options it offers. The groups are separated by the grid's own gap. */
 
 /* ---------------------------------------------------------------------------
    The statement of work
@@ -380,17 +372,15 @@ body {
   align-items: baseline;
   justify-content: space-between;
   gap: 0.35rem 2rem;
-  padding: 1.35rem 1.25rem;
+  padding: 1.75rem 0;
   font-size: clamp(1.35rem, 3.4vw, 2.75rem);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.02em;
 }
 
-/* Alternating tones, never rules. */
-.contact-row-alt {
-  background: var(--surface-2);
-}
+/* No bands: the rows are told apart by space alone, which the sheet allows and
+   which keeps the section minimal. */
 
 .contact-key {
   color: var(--muted);

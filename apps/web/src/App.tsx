@@ -382,7 +382,7 @@ function Services() {
   return (
     <section
       id="services"
-      className="flex min-h-svh flex-col justify-center py-20 sm:py-28 lg:py-32"
+      className="flex min-h-svh flex-col justify-center py-28 sm:py-40 lg:py-56"
     >
       <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
         <AsciiRule index="01" label="services" />
@@ -405,9 +405,9 @@ function Services() {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-2">
+        <div className="mt-16 grid grid-cols-1 gap-x-16 gap-y-16 lg:grid-cols-2">
           <Reveal delay={80}>
-            <div className="svc-group">
+            <div>
               <div className="flex items-baseline justify-between border-b border-[var(--ink)] pb-3">
                 <h3 className="text-lg font-medium tracking-[-0.02em]">
                   We design and build
@@ -440,7 +440,7 @@ function Services() {
           </Reveal>
 
           <Reveal delay={180}>
-            <div className="svc-group svc-group-alt">
+            <div>
               <div className="flex items-baseline justify-between border-b border-[var(--ink)] pb-3">
                 <h3 className="text-lg font-medium tracking-[-0.02em]">
                   We run and maintain
@@ -521,7 +521,7 @@ function Process() {
   return (
     <section
       id="process"
-      className="flex min-h-svh flex-col justify-center py-20 sm:py-28 lg:py-32"
+      className="flex min-h-svh flex-col justify-center py-28 sm:py-40 lg:py-56"
     >
       <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
         <AsciiRule index="02" label="process" />
@@ -593,7 +593,7 @@ function Principles() {
         <AsciiHero mode="field" fps={10} speed={0.25} {...GREY_FIELD} />
       </div>
 
-      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
+      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-40 lg:py-56">
         <AsciiRule index="03" label="principles" />
         <Reveal>
           <h2 className="display mt-12 max-w-4xl text-[clamp(1.5rem,4.4vw,3.25rem)]">
@@ -648,7 +648,7 @@ function Contact() {
         <AsciiHero mode="field" fps={10} {...SECTION_FIELD} />
       </div>
 
-      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-28 lg:py-32">
+      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-40 lg:py-56">
         <AsciiRule index="04" label="contact" />
 
         <Reveal>
