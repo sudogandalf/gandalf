@@ -250,6 +250,121 @@ body {
   background: var(--surface-3);
 }
 
+/* ---------------------------------------------------------------------------
+   The statement of work
+
+   The process printed as an itinerary, per the direction sheet: a paper slip on
+   the page's black ground, its bottom edge cut in a zigzag, rows paired by dot
+   leaders, and a final inverted bar carrying the result.
+
+   This is the one place on the site where the ground is light, which is what
+   makes the section read as a printed thing laid on the page rather than
+   another block of type. The zigzag is a clip-path so it cuts the paper itself
+   and shows the black through, rather than painting a triangle strip on top.
+   --------------------------------------------------------------------------- */
+.slip {
+  background: #f4f1ea;
+  color: #0b0b0b;
+  padding: 1.75rem 1.75rem 3.25rem;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - 10px),
+    95.83% 100%,
+    91.67% calc(100% - 10px),
+    87.5% 100%,
+    83.33% calc(100% - 10px),
+    79.17% 100%,
+    75% calc(100% - 10px),
+    70.83% 100%,
+    66.67% calc(100% - 10px),
+    62.5% 100%,
+    58.33% calc(100% - 10px),
+    54.17% 100%,
+    50% calc(100% - 10px),
+    45.83% 100%,
+    41.67% calc(100% - 10px),
+    37.5% 100%,
+    33.33% calc(100% - 10px),
+    29.17% 100%,
+    25% calc(100% - 10px),
+    20.83% 100%,
+    16.67% calc(100% - 10px),
+    12.5% 100%,
+    8.33% calc(100% - 10px),
+    4.17% 100%,
+    0 calc(100% - 10px)
+  );
+}
+
+.slip-head {
+  font-size: var(--step-small);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+.slip-when {
+  margin-top: 1.75rem;
+  font-size: var(--step-small);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.slip-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-block: 0.45rem;
+  font-size: var(--step-body);
+  /* Times and durations line up in a column, so the figures must not be
+     proportional. */
+  font-variant-numeric: tabular-nums;
+}
+
+.slip-line {
+  padding-block: 0.45rem;
+}
+
+.slip-what {
+  font-weight: 500;
+}
+
+.slip-note {
+  margin-top: 0.2rem;
+  font-size: var(--step-small);
+  line-height: 1.45;
+  opacity: 0.6;
+}
+
+/* The leader is a border on an empty flex child rather than a run of periods:
+   it stretches to whatever gap is left and cannot wrap onto a second line. */
+.slip-leader {
+  flex: 1 1 auto;
+  min-width: 1.25rem;
+  border-bottom: 2px dotted currentColor;
+  opacity: 0.3;
+  transform: translateY(-0.28em);
+}
+
+.slip-value {
+  white-space: nowrap;
+}
+
+.slip-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 1.5rem -1.75rem 0;
+  padding: 0.8rem 1.75rem;
+  background: #0b0b0b;
+  color: #f4f1ea;
+  font-size: var(--step-small);
+  font-weight: 500;
+}
+
 /* The Services piece: no frame, no panel — the drawing should read as a
  * constellation in space, so its edges dissolve into the black rather than
  * stopping at a rule.
@@ -696,11 +811,6 @@ body {
   50% {
     transform: translateY(2px);
   }
-}
-
-/* The process reads as a pipeline: each stage trails an arrow into the next. */
-.step-flow {
-  color: var(--line-strong);
 }
 
 /* A scroll rail down the right edge, drawn in box-drawing characters. It lives

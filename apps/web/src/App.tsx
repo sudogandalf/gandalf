@@ -28,25 +28,35 @@ const HOST_ITEMS = [
   "Backups & monitoring",
 ]
 
+/**
+ * The process, as the direction sheet's "itinerary on a slip": each stage pairs
+ * what happens with how long it takes, grouped under the time heading that
+ * carries the order. The durations are sample content — the brief gives no
+ * timings — and are listed in the report for the client to confirm.
+ */
 const PROCESS = [
   {
-    n: "01",
+    when: "Week one",
     title: "Discover",
+    takes: "2–3 days",
     body: "We map the goal, the audience and the systems it has to talk to. You get a written scope, not a vague estimate.",
   },
   {
-    n: "02",
+    when: "Week one",
     title: "Design",
+    takes: "4–5 days",
     body: "Structure and interface, prototyped early. You react to something real before production code is written.",
   },
   {
-    n: "03",
+    when: "Weeks two to six",
     title: "Build",
+    takes: "3–5 weeks",
     body: "Small increments you can review every week. Progress stays visible and nothing is a surprise at handover.",
   },
   {
-    n: "04",
+    when: "After launch",
     title: "Launch & care",
+    takes: "ongoing",
     body: "DNS, SSL, email and hosting configured. Monitoring, backups and support continue after go-live.",
   },
 ]
@@ -497,6 +507,17 @@ function Services() {
 }
 
 function Process() {
+  // Group the stages under the time headings that carry their order.
+  const groups = PROCESS.reduce<{ when: string; rows: typeof PROCESS }[]>(
+    (acc, step) => {
+      const last = acc[acc.length - 1]
+      if (last && last.when === step.when) last.rows.push(step)
+      else acc.push({ when: step.when, rows: [step] })
+      return acc
+    },
+    []
+  )
+
   return (
     <section
       id="process"
@@ -504,47 +525,56 @@ function Process() {
     >
       <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
         <AsciiRule index="02" label="process" />
-        <Reveal>
-          <div className="mt-12 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
-            <div className="max-w-xl">
+        <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_0.85fr] lg:items-start lg:gap-16">
+          <Reveal>
+            <div>
               <Eyebrow>Process</Eyebrow>
-              <h2 className="display mt-5 text-[clamp(1.6rem,4.6vw,3.5rem)]">
-                <AsciiDecode text="How the work happens." />
-              </h2>
-            </div>
-            <p className="max-w-xs text-base leading-relaxed text-[var(--faint)]">
-              Four stages, each with something concrete to show for it. You
-              always know where the project stands.
-            </p>
-          </div>
-        </Reveal>
-
-        <div className="mt-14 grid grid-cols-1 gap-px border-t border-[var(--line)] sm:grid-cols-2 lg:grid-cols-4">
-          {PROCESS.map((step, i) => (
-            <Reveal key={step.n} delay={i * 90}>
-              {/* Padding-right has to clear the paragraph's 26ch measure cap
-                  (~241px) before it has any effect on wider columns. */}
-              <div className="bleed h-full border-b border-[var(--line)] py-8 pl-5 pr-8 sm:border-r sm:pl-0 sm:pr-12">
-                <span className="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)]">
-                  [{step.n}]
-                  {/* The stages read as a pipeline. A plain ASCII arrowhead,
-                      not U+25B6 — that glyph is the media play button and
-                      reads as a video control on a site built from text. */}
-                  {i < PROCESS.length - 1 && (
-                    <span aria-hidden="true" className="step-flow hidden sm:inline">
-                      {" -->"}
-                    </span>
-                  )}
+              <h2 className="display mt-5 text-[clamp(2.5rem,4.4vw,4.25rem)]">
+                <AsciiDecode text="How the work" />
+                <br />
+                <span className="text-[var(--muted)]">
+                  <AsciiDecode text="happens." delay={120} />
                 </span>
-                <h3 className="mt-5 text-[1.15rem] font-medium tracking-[-0.02em]">
-                  {step.title}
-                </h3>
-                <p className="mt-3 max-w-[26ch] text-base leading-relaxed text-[var(--muted)]">
-                  {step.body}
-                </p>
+              </h2>
+              <p className="mt-7 max-w-[30ch] text-[1.125rem] leading-relaxed text-[var(--body)]">
+                Four stages, each with something concrete to show for it. You
+                always know where the project stands.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={140}>
+            <div>
+              <div className="slip">
+                <p className="slip-head">Statement of work</p>
+
+                {groups.map((group) => (
+                  <div key={group.when} className="slip-group">
+                    <h3 className="slip-when">{group.when}</h3>
+                    {group.rows.map((row) => (
+                      <div key={row.title} className="slip-line">
+                        <div className="slip-row">
+                          <span className="slip-what">{row.title}</span>
+                          <span aria-hidden="true" className="slip-leader" />
+                          <span className="slip-value">{row.takes}</span>
+                        </div>
+                        {/* The note sits under the row, not inside its left cell:
+                            inside, it fills the row and the leader has no gap
+                            left to stretch into. */}
+                        <p className="slip-note">{row.body}</p>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+
+                {/* The inverted final row: what the reader holds at the end. */}
+                <div className="slip-total">
+                  <span>A live site, monitored and backed up</span>
+                  <span>4–8 weeks</span>
+                </div>
               </div>
-            </Reveal>
-          ))}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>
