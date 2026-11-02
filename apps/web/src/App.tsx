@@ -305,26 +305,31 @@ function Hero() {
           </h1>
         </Rise>
 
-        <div className="mt-8 grid gap-7 border-t border-white/15 pt-7 sm:mt-10 sm:pt-9 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-          <Rise delay={190}>
-            <h2 className="display text-[clamp(1.4rem,3.1vw,2.5rem)] text-white">
-              <AsciiDecode text="We build the software." delay={320} />
-              <br />
-              <span className="text-white/50">
-                <AsciiDecode text="We run the infrastructure." delay={430} />
-              </span>
-            </h2>
+        {/* The direction's hero blueprint: "Void, then statement on axis". The
+            statement starts on the 42% line and runs to the right margin; the
+            supporting sentence sits left of that axis, bottom-aligned to the
+            statement's last line, in a 32ch measure. The 0.8fr/1.2fr split with
+            a 64px gap puts the axis at 43% of the content width. */}
+        <div className="mt-8 grid gap-7 border-t border-white/15 pt-7 sm:mt-10 sm:pt-9 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-16">
+          <Rise delay={290}>
+            <p className="max-w-[32ch] text-[1.125rem] leading-relaxed text-[var(--body)]">
+              Gandalf designs and builds websites and applications, then keeps
+              them online — domains, SSL, business email and cPanel hosting, all
+              handled by the same team.
+            </p>
           </Rise>
 
-          <Rise delay={290}>
-            <div className="lg:pb-1">
-              <p className="max-w-md text-base leading-relaxed text-white/55">
-                Gandalf designs and builds websites and applications, then keeps
-                them online — domains, SSL, business email and cPanel hosting,
-                all handled by the same team.
-              </p>
+          <Rise delay={190}>
+            <div>
+              <h2 className="display text-[clamp(1.6rem,3.4vw,2.75rem)] text-white">
+                <AsciiDecode text="We build the software." delay={320} />
+                <br />
+                <span className="text-[var(--muted)]">
+                  <AsciiDecode text="We run the infrastructure." delay={430} />
+                </span>
+              </h2>
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end">
                 <a
                   href="#contact"
                   className="btn-glow inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-ui)] border border-white bg-[var(--solid-bg)] px-7 py-3.5 text-sm font-medium text-[var(--solid-fg)] hover:bg-transparent hover:text-white sm:w-auto"
