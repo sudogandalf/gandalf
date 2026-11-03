@@ -34,19 +34,20 @@ const RAMP = " .:+"
 
 /**
  * Quantised ink levels keep canvas state changes cheap. The ramp runs from a
- * neutral haze up to the accent — cool blue into pale ice — so the ripple
- * ridges are the only thing that lights up in colour.
+ * pale haze up to the darkest ink, and only the last level is printed in the
+ * accent — so the ripple ridges are the only thing that carries colour.
  */
 const DEFAULT_LEVELS = [
+  "rgba(255, 255, 255, 0.05)",
   "rgba(255, 255, 255, 0.1)",
-  "rgba(178, 208, 255, 0.26)",
-  "rgba(120, 165, 255, 0.5)",
-  "rgba(96, 165, 250, 0.92)",
+  "rgba(255, 255, 255, 0.17)",
+  "rgba(255, 255, 255, 0.32)",
 ]
 
-/** Glow painted around the brightest ink level. */
-const DEFAULT_GLOW = "rgba(96, 165, 250, 0.9)"
-const DEFAULT_GLOW_BLUR = 7
+/** Ink spread painted around the darkest level. On paper this is a bleed, not a
+ *  glow — so it stays tight and low. */
+const DEFAULT_GLOW = "transparent"
+const DEFAULT_GLOW_BLUR = 0
 
 /** Row count for field mode. Deriving the cell from the canvas HEIGHT (a fixed
  *  row count) rather than its width is what keeps the ripple texture identical

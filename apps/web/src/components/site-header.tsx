@@ -41,7 +41,7 @@ function ArrowUpRight({ className = "" }: { className?: string }) {
 }
 
 /**
- * Sticky header. Transparent at the top of the page, then gains a frosted black
+ * Sticky header. Transparent at the top of the page, then gains a frosted paper
  * background and a hairline border once the visitor scrolls.
  *
  * On mobile the links open a FULL-SCREEN panel rather than a dropdown: the
@@ -143,7 +143,9 @@ export function SiteHeader() {
           {/* Wordmark */}
           <a
             href="#top"
-            className="text-[0.95rem] font-semibold tracking-[-0.02em]"
+            /* min-h-11: the wordmark is a link, so its hit area clears 44px
+               even though the type is 15px. */
+            className="flex min-h-11 items-center text-[0.95rem] font-semibold tracking-[-0.02em]"
             aria-label="Gandalf — home"
           >
             GANDALF
@@ -154,11 +156,14 @@ export function SiteHeader() {
             <ul className="flex items-center gap-9">
               {NAV.map((item) => (
                 <li key={item.href}>
+                  {/* The anchor carries the 44px hit area; the underline
+                      stays on the span so it still hugs the text instead of
+                      dropping to the bottom of the taller box. */}
                   <a
                     href={item.href}
-                    className="nav-link link-underline text-[0.8125rem] font-medium"
+                    className="nav-link flex min-h-11 items-center text-[0.8125rem] font-medium"
                   >
-                    {item.label}
+                    <span className="link-underline">{item.label}</span>
                   </a>
                 </li>
               ))}
@@ -168,7 +173,7 @@ export function SiteHeader() {
           <div className="flex items-center gap-3">
             <a
               href="#contact"
-              className="header-cta hidden items-center gap-2 px-5 py-2.5 text-[0.8125rem] font-medium md:inline-flex"
+              className="header-cta hidden min-h-11 items-center gap-2 px-5 py-2 text-[0.8125rem] font-medium active:translate-y-px md:inline-flex"
             >
               Start a project
             </a>
@@ -181,7 +186,9 @@ export function SiteHeader() {
               aria-expanded={open}
               aria-controls="site-menu"
               aria-label={open ? "Close menu" : "Open menu"}
-              className="menu-btn flex size-10 shrink-0 flex-col items-center justify-center gap-[5px]"
+              /* size-11, not size-10: 44px, so the only control on a phone
+                 header meets the touch-target floor. */
+              className="menu-btn flex size-11 shrink-0 flex-col items-center justify-center gap-[5px]"
             >
               <span
                 className={`block h-px w-4 bg-current transition-transform duration-300 ${
@@ -217,7 +224,7 @@ export function SiteHeader() {
           </div>
 
           <div className="relative mx-auto flex h-full w-full min-w-0 max-w-[1200px] flex-col px-5 pt-24 pb-8 sm:px-8">
-            <p className="font-mono text-[0.625rem] tracking-[0.24em] text-white/35 uppercase">
+            <p className="font-mono text-[0.625rem] tracking-[0.24em] text-[var(--faint-dim)] uppercase">
               [ Menu ]
             </p>
 
@@ -233,12 +240,12 @@ export function SiteHeader() {
                           "--menu-delay": `${120 + i * 70}ms`,
                         } as React.CSSProperties
                       }
-                      className="menu-item group flex h-full items-center justify-between gap-4 border-b border-white/10 py-5 lg:py-4"
+                      className="menu-item group flex h-full items-center justify-between gap-4 border-b border-[var(--line-soft)] py-5 lg:py-4"
                     >
-                      <span className="text-[1.75rem] font-medium tracking-[-0.03em] text-white sm:text-[2.25rem] lg:text-[2.75rem]">
+                      <span className="text-[1.75rem] font-medium tracking-[-0.03em] text-[var(--ink)] sm:text-[2.25rem] lg:text-[2.75rem]">
                         {item.label}
                       </span>
-                      <ArrowRight className="menu-arrow size-6 shrink-0 text-white/35 lg:size-8" />
+                      <ArrowRight className="menu-arrow size-6 shrink-0 text-[var(--faint-dim)] lg:size-8" />
                     </a>
                   </li>
                 ))}
@@ -258,13 +265,13 @@ export function SiteHeader() {
                 <a
                   href="#contact"
                   onClick={closeMenu}
-                  className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-ui)] border border-white bg-white px-6 py-4 text-sm font-medium text-[#101010] transition-colors duration-300 hover:bg-transparent hover:text-white lg:w-auto lg:px-9"
+                  className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-ui)] border border-[var(--ink)] bg-[var(--ink)] px-6 py-4 text-sm font-medium text-[var(--surface)] transition-colors duration-300 active:translate-y-px hover:bg-transparent hover:text-[var(--ink)] lg:w-auto lg:px-9"
                 >
                   Start a project
                   <ArrowUpRight className="size-4" />
                 </a>
 
-                <p className="mt-6 font-mono text-[0.625rem] tracking-[0.2em] text-white/30 uppercase lg:mt-0">
+                <p className="mt-6 font-mono text-[0.625rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase lg:mt-0">
                   Gandalf · software &amp; infrastructure
                 </p>
               </div>

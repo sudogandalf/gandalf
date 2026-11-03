@@ -1,11 +1,9 @@
+import * as React from "react"
+import gandalfArt from "@/assets/gandalf.png"
+import { AsciiArt } from "@/components/ascii-art"
 import { AsciiDecode } from "@/components/ascii-decode"
 import { AsciiHero } from "@/components/ascii-hero"
-import { AsciiArt } from "@/components/ascii-art"
-import gandalfArt from "@/assets/gandalf.png"
-import { AsciiRail } from "@/components/ascii-rail"
-import { useParallax } from "@/components/parallax"
 import { Reveal } from "@/components/reveal"
-import { useScrollZoom } from "@/components/scroll-zoom"
 import { SiteHeader } from "@/components/site-header"
 import { useSmoothAnchors } from "@/components/smooth-scroll"
 
@@ -13,51 +11,54 @@ import { useSmoothAnchors } from "@/components/smooth-scroll"
 /* Content                                                                    */
 /* -------------------------------------------------------------------------- */
 
-const BUILD_ITEMS = [
-  "Websites & marketing sites",
-  "Web applications",
-  "APIs & integrations",
-  "Design systems & component libraries",
+const EMAIL = "hello@gandalf.dev"
+const PROJECT_MAIL = `mailto:${EMAIL}?subject=${encodeURIComponent("New project")}`
+
+type ListItem = { label: string; tag: string }
+
+const BUILD_ITEMS: ListItem[] = [
+  { label: "Websites & marketing sites", tag: "web" },
+  { label: "Web applications", tag: "app" },
+  { label: "APIs & integrations", tag: "api" },
+  { label: "Design systems & component libraries", tag: "ui" },
 ]
 
-const HOST_ITEMS = [
-  "Domain registration & DNS",
-  "SSL certificates",
-  "Business email",
-  "cPanel web hosting",
-  "Backups & monitoring",
+const RUN_ITEMS: ListItem[] = [
+  { label: "Domain registration & DNS", tag: "dns" },
+  { label: "SSL certificates", tag: "tls" },
+  { label: "Business email", tag: "mx" },
+  { label: "cPanel web hosting", tag: "cpanel" },
+  { label: "Backups & monitoring", tag: "ops" },
 ]
 
 /**
- * The process, as the direction sheet's "itinerary on a slip": each stage pairs
- * what happens with how long it takes, grouped under the time heading that
- * carries the order. The durations are sample content — the brief gives no
- * timings — and are listed in the report for the client to confirm.
+ * The process. The durations are sample content — the brief gives no timings —
+ * and are listed for the client to confirm.
  */
 const PROCESS = [
   {
-    when: "Week one",
-    title: "Discover",
+    stage: "Discover",
+    when: "week 1",
     takes: "2–3 days",
-    body: "We map the goal, the audience and the systems it has to talk to. You get a written scope, not a vague estimate.",
+    outcome: "A written scope: the goal, the audience and the systems it has to talk to.",
   },
   {
-    when: "Week one",
-    title: "Design",
+    stage: "Design",
+    when: "week 1",
     takes: "4–5 days",
-    body: "Structure and interface, prototyped early. You react to something real before production code is written.",
+    outcome: "Structure and interface, prototyped early, so you react to something real.",
   },
   {
-    when: "Weeks two to six",
-    title: "Build",
+    stage: "Build",
+    when: "weeks 2–6",
     takes: "3–5 weeks",
-    body: "Small increments you can review every week. Progress stays visible and nothing is a surprise at handover.",
+    outcome: "Weekly increments you can review. Nothing is a surprise at handover.",
   },
   {
-    when: "After launch",
-    title: "Launch & care",
+    stage: "Launch & care",
+    when: "after launch",
     takes: "ongoing",
-    body: "DNS, SSL, email and hosting configured. Monitoring, backups and support continue after go-live.",
+    outcome: "DNS, SSL, email and hosting configured; monitoring, backups and support.",
   },
 ]
 
@@ -76,12 +77,30 @@ const PRINCIPLES = [
   },
 ]
 
-const EMAIL = "hello@gandalf.dev"
+const INFO_FACTS: { key: string; value: React.ReactNode }[] = [
+  { key: "type", value: "Software studio" },
+  { key: "builds", value: "Websites, web apps, APIs" },
+  { key: "runs", value: "Domains, DNS, SSL, email, cPanel hosting" },
+  { key: "contract", value: "One, end to end" },
+  { key: "ownership", value: "Everything in your name" },
+  { key: "replies", value: "Usually within one business day" },
+  { key: "email", value: <a href={`mailto:${EMAIL}`}>{EMAIL}</a> },
+]
+
+/** The contents tree, drawn with box characters. */
+const TOC = [
+  { id: "overview", label: "overview", branch: "├── " },
+  { id: "services", label: "services", branch: "├── " },
+  { id: "build", label: "build", branch: "│   ├── " },
+  { id: "run", label: "run", branch: "│   └── " },
+  { id: "process", label: "process", branch: "├── " },
+  { id: "principles", label: "principles", branch: "├── " },
+  { id: "contact", label: "contact", branch: "└── " },
+]
 
 /**
- * The wordmark, drawn rather than set. Generated from a fixed 5x5 grid so every
- * row is exactly the same width — block art typed by hand is how you end up
- * with a ragged T and a drifting N.
+ * The wordmark, drawn rather than set: a fixed 5×5 grid per letter, so every
+ * row is exactly the same width and no column drifts.
  */
 const WORDMARK = [
   " ###     #    #   #  ####     #    #      #####",
@@ -90,6 +109,18 @@ const WORDMARK = [
   "#  ##  #   #  #  ##  #   #  #   #  #      #    ",
   " ###   #   #  #   #  ####   #   #  #####  #    ",
 ].join("\n")
+
+/** Motes around Gandalf — fixed positions, so the scatter is reviewable. */
+const GANDALF_MOTES = [
+  { top: "-4%", left: "22%", size: 2, delay: 0.64, duration: 7.17, dx: -5.7, dy: -9.6 },
+  { top: "10%", left: "84%", size: 3, delay: 0.45, duration: 6.32, dx: 4.0, dy: -10.6 },
+  { top: "19%", left: "-6%", size: 3, delay: 2.82, duration: 8.04, dx: 9.0, dy: -9.2 },
+  { top: "34%", left: "98%", size: 2, delay: 5.92, duration: 8.77, dx: -3.5, dy: -11.2 },
+  { top: "48%", left: "6%", size: 2, delay: 3.25, duration: 8.04, dx: -6.1, dy: -6.4 },
+  { top: "62%", left: "92%", size: 3, delay: 6.0, duration: 5.84, dx: 3.5, dy: -6.7 },
+  { top: "78%", left: "2%", size: 2, delay: 5.69, duration: 6.69, dx: 3.1, dy: -13.3 },
+  { top: "88%", left: "70%", size: 2, delay: 3.59, duration: 8.27, dx: 0.4, dy: -12.4 },
+]
 
 /* -------------------------------------------------------------------------- */
 /* Small pieces                                                               */
@@ -111,137 +142,136 @@ function ArrowUpRight({ className = "" }: { className?: string }) {
   )
 }
 
-/** Section label, wrapped in ASCII brackets to echo the terminal motif. */
-function Eyebrow({ children }: { children: string }) {
-  return (
-    <p className="eyebrow flex items-center gap-2">
-      <span aria-hidden="true" className="eyebrow-mark">
-        [
-      </span>
-      <AsciiDecode text={children} />
-      <span aria-hidden="true" className="eyebrow-mark">
-        ]
-      </span>
-    </p>
-  )
-}
-
-/**
- * Rises into place as soon as the page loads.
- *
- * Deliberately *not* the scroll-reveal used further down the page: the hero is
- * on screen at load, and on a short window its lower half can sit below the
- * fold. Keying the hero off scroll position would leave the headline invisible
- * until the visitor happened to scroll, so it animates on load instead.
- */
-function Rise({
+/** A heading with a permalink, the way a wiki sets every section title. */
+function Heading({
+  id,
+  level,
   children,
-  delay = 0,
 }: {
-  children: React.ReactNode
-  delay?: number
+  id: string
+  level: 2 | 3
+  children: string
 }) {
+  const Tag = level === 2 ? "h2" : "h3"
   return (
-    <div
-      className="hero-rise"
-      style={{ "--rise-delay": `${delay}ms` } as React.CSSProperties}
-    >
+    <Tag id={id} className={level === 2 ? "wiki-h2" : "wiki-h3"}>
       {children}
-    </div>
+      <a href={`#${id}`} className="anchor" aria-label={`Link to ${children}`}>
+        #
+      </a>
+    </Tag>
+  )
+}
+
+function List({ items }: { items: ListItem[] }) {
+  return (
+    <ul className="list">
+      {items.map((item) => (
+        <li key={item.label}>
+          <span aria-hidden="true" className="list-mark">
+            &gt;
+          </span>
+          {item.label}
+          <span aria-hidden="true" className="list-tag">
+            {item.tag}
+          </span>
+        </li>
+      ))}
+    </ul>
   )
 }
 
 /**
- * ASCII section rule — a C-style comment stretched across the full width.
- *
- * The optional index is the section's place in the page, so the rules read as
- * numbered lines rather than as six identical dashes.
- *
- * The dash run is a long literal clipped by `overflow: hidden`, so the rule
- * always reaches the right edge without measuring anything in JS.
+ * Tracks which section the reader is in: the last heading whose top has passed
+ * a line just under the header. A passive, rAF-throttled scroll read — no
+ * layout writes, one measurement pass per frame at most.
  */
-function AsciiRule({ label, index }: { label?: string; index?: string }) {
-  const head = [index, label].filter(Boolean).join(" ")
+function useActiveSection(ids: string[]) {
+  const [active, setActive] = React.useState(ids[0])
+
+  React.useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const line = 120
+      let current = ids[0]
+      for (const id of ids) {
+        const el = document.getElementById(id)
+        if (el && el.getBoundingClientRect().top <= line) current = id
+      }
+      // The last section is too short to scroll its heading up to the line,
+      // so reaching the bottom of the page selects it.
+      const doc = document.documentElement
+      if (window.scrollY + window.innerHeight >= doc.scrollHeight - 4) {
+        current = ids[ids.length - 1]
+      }
+      setActive(current)
+    }
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame)
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [ids])
+
+  return active
+}
+
+const TOC_IDS = TOC.map((item) => item.id)
+
+function TocTree({ active }: { active: string }) {
+  return (
+    <ul className="toc-list">
+      <li>
+        <a href="#top">
+          <span>gandalf/</span>
+        </a>
+      </li>
+      {TOC.map((item) => (
+        <li key={item.id}>
+          <a
+            href={`#${item.id}`}
+            aria-current={active === item.id ? "true" : undefined}
+          >
+            <span aria-hidden="true" className="toc-branch">
+              {item.branch}
+            </span>
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function Contents() {
+  const active = useActiveSection(TOC_IDS)
 
   return (
-    <div aria-hidden="true" className="ascii-rule bleed pl-5 sm:pl-0">
-      <span>{head ? `/* ${head} ` : "/* "}</span>
-      <span className="ascii-rule-fill">{"-".repeat(400)}</span>
-      <span>{" */"}</span>
-    </div>
+    <aside className="wiki-toc">
+      <nav aria-label="Contents" className="toc-side">
+        <p className="toc-title mono">contents</p>
+        <TocTree active={active} />
+      </nav>
+      <details className="toc-mobile">
+        <summary>contents</summary>
+        <nav aria-label="Contents">
+          <TocTree active={active} />
+        </nav>
+      </details>
+    </aside>
   )
 }
 
-/**
- * Ink for the ASCII field on the black sections below the hero. The hero runs
- * its palette at full strength; this one steps down through near-invisible
- * hairlines and lets only the ridge of each ripple pick up the accent, so the
- * texture reads as a background rather than as content.
- */
-const SECTION_FIELD = {
-  levels: [
-    "rgba(255, 255, 255, 0.06)",
-    "rgba(255, 255, 255, 0.11)",
-    "rgba(255, 255, 255, 0.17)",
-    // Only the ridge of each ripple picks up the accent.
-    "rgba(96, 165, 250, 0.42)",
-  ],
-  glowColor: "rgba(96, 165, 250, 0.5)",
-  glowBlur: 5,
-}
-
-/**
- * Neutral variant for the Principles section: the same ripples rendered in
- * nothing but white — no accent tint on the ridge and no halo.
- */
-const GREY_FIELD = {
-  levels: [
-    "rgba(255, 255, 255, 0.07)",
-    "rgba(255, 255, 255, 0.12)",
-    "rgba(255, 255, 255, 0.17)",
-    "rgba(255, 255, 255, 0.24)",
-  ],
-  glowColor: "transparent",
-  glowBlur: 0,
-}
-
-/**
- * Blue motes drifting around Gandalf. Fixed positions rather than runtime
- * randomness, so the scatter stays reviewable and identical on every render —
- * and can be nudged deliberately instead of re-rolled until it looks right.
- */
-const GANDALF_MOTES = [
-  { top: "-5.4%", left: "22.3%", size: 2, delay: 0.64, duration: 7.17, dx: -5.7, dy: -9.6 },
-  { top: "9.9%", left: "24.2%", size: 4, delay: 0.45, duration: 6.32, dx: 4.0, dy: -10.6 },
-  { top: "18.5%", left: "55.8%", size: 2, delay: 4.17, duration: 6.03, dx: -1.8, dy: -9.7 },
-  { top: "18.6%", left: "-4.7%", size: 4, delay: 2.82, duration: 8.04, dx: 10.0, dy: -9.2 },
-  { top: "19.7%", left: "44.8%", size: 2, delay: 1.7, duration: 6.29, dx: -6.5, dy: -9.0 },
-  { top: "23.3%", left: "79.8%", size: 3, delay: 4.85, duration: 9.47, dx: 7.1, dy: -11.7 },
-  { top: "24.2%", left: "97.7%", size: 4, delay: 5.92, duration: 8.77, dx: -3.5, dy: -11.2 },
-  { top: "25.6%", left: "70.5%", size: 3, delay: 0.47, duration: 5.77, dx: -6.4, dy: -12.7 },
-  { top: "32.2%", left: "13.5%", size: 3, delay: 2.67, duration: 5.62, dx: -10.4, dy: -11.8 },
-  { top: "48.0%", left: "73.0%", size: 2, delay: 3.25, duration: 8.04, dx: -9.1, dy: -6.4 },
-  { top: "48.1%", left: "81.3%", size: 3, delay: 6.0, duration: 5.84, dx: 3.5, dy: -6.7 },
-  { top: "51.0%", left: "8.1%", size: 3, delay: 6.56, duration: 8.42, dx: -4.7, dy: -6.2 },
-  { top: "67.5%", left: "37.3%", size: 2, delay: 5.69, duration: 6.69, dx: 3.1, dy: -13.3 },
-  { top: "76.7%", left: "90.7%", size: 3, delay: 3.59, duration: 8.27, dx: 0.4, dy: -12.4 },
-  { top: "82.9%", left: "85.2%", size: 3, delay: 7.18, duration: 6.1, dx: -7.1, dy: -12.1 },
-  { top: "87.6%", left: "51.7%", size: 3, delay: 5.79, duration: 7.63, dx: 6.1, dy: -11.4 },
-  { top: "89.8%", left: "10.0%", size: 2, delay: 5.54, duration: 7.09, dx: 9.2, dy: -10.0 },
-  { top: "91.1%", left: "5.6%", size: 2, delay: 5.18, duration: 7.56, dx: 2.6, dy: -8.6 },
-]
-
-/**
- * Gandalf, drawn in ASCII, with blue motes drifting around him.
- *
- * The figure is a PNG of character art rather than live text: it arrived as a
- * JPEG of rendered ASCII, so it was cropped to its ink and its luminance turned
- * into alpha. See the note on `.gandalf-art` in site.css.
- */
 function GandalfFigure() {
   return (
-    <div className="gandalf-stage shrink-0 self-center lg:self-end">
-      <span aria-hidden="true" className="gandalf-glow" />
+    <div className="gandalf-stage">
       {GANDALF_MOTES.map((mote, i) => (
         <span
           key={i}
@@ -263,8 +293,7 @@ function GandalfFigure() {
       ))}
       <img
         src={gandalfArt}
-        alt=""
-        aria-hidden="true"
+        alt="Gandalf, drawn entirely in ASCII characters"
         width={440}
         height={538}
         className="gandalf-art"
@@ -273,427 +302,212 @@ function GandalfFigure() {
   )
 }
 
-/* -------------------------------------------------------------------------- */
-/* Sections                                                                   */
-/* -------------------------------------------------------------------------- */
-
-function Hero() {
-  const zoomRef = useScrollZoom<HTMLDivElement>()
-
+function Infobox() {
   return (
-    <section id="top" ref={zoomRef} className="hero-band hero-scroll relative">
-      <div className="hero-sticky sticky top-0 flex h-svh flex-col justify-end overflow-hidden pt-20 pb-10 sm:pt-24 sm:pb-14">
-        {/* Ambient accent wash, furthest back. */}
-        <div aria-hidden="true" className="hero-bloom bloom-blue" />
-        <div aria-hidden="true" className="hero-bloom bloom-ice" />
-
-        {/* Animated ASCII field: the hero's texture is made of characters.
-            Masked to a soft ellipse so it fades out rather than ending abruptly.
-            The ellipse is centred above the copy block on purpose — the type is
-            bottom-anchored, so the field can be at full strength up top and fall
-            away before it reaches the eyebrow. */}
-        <div
-          aria-hidden="true"
-          className="hero-field absolute inset-0 [mask-image:radial-gradient(76%_58%_at_55%_28%,black,transparent_96%)]"
-        >
-          <AsciiHero mode="field" fps={14} />
+    <aside className="wiki-info" aria-label="Gandalf at a glance">
+      <div className="infobox">
+        <div className="infobox-title mono">
+          <span>gandalf</span>
+          <span>infobox</span>
         </div>
-
-        <div aria-hidden="true" className="hero-scrim" />
-
-        <div className="hero-copy relative mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
-        {/* No eyebrow above the title. It read "Gandalf · software &
-            infrastructure" directly above the word GANDALF, which is the same
-            information twice, and the direction sheet bans kickers outright. */}
-        <Rise delay={90}>
-          <h1 className="display text-[clamp(2.9rem,12vw,8.5rem)] text-white">
-            <AsciiDecode text="GANDALF" duration={1100} delay={200} />
-          </h1>
-        </Rise>
-
-        {/* The direction's hero blueprint: "Void, then statement on axis". The
-            statement starts on the 42% line and runs to the right margin; the
-            supporting sentence sits left of that axis, bottom-aligned to the
-            statement's last line, in a 32ch measure. The 0.8fr/1.2fr split with
-            a 64px gap puts the axis at 43% of the content width. */}
-        <div className="mt-8 grid gap-7 border-t border-white/15 pt-7 sm:mt-10 sm:pt-9 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-16">
-          <Rise delay={290}>
-            <p className="max-w-[32ch] text-[1.125rem] leading-relaxed text-[var(--body)]">
-              Gandalf designs and builds websites and applications, then keeps
-              them online — domains, SSL, business email and cPanel hosting, all
-              handled by the same team.
-            </p>
-          </Rise>
-
-          <Rise delay={190}>
-            <div>
-              <h2 className="display text-[clamp(1.6rem,3.4vw,2.75rem)] text-white">
-                <AsciiDecode text="We build the software." delay={320} />
-                <br />
-                <span className="text-[var(--muted)]">
-                  <AsciiDecode text="We run the infrastructure." delay={430} />
-                </span>
-              </h2>
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-end">
-                <a
-                  href="#contact"
-                  className="btn-glow inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-ui)] border border-white bg-[var(--solid-bg)] px-7 py-3.5 text-sm font-medium text-[var(--solid-fg)] hover:bg-transparent hover:text-white sm:w-auto"
-                >
-                  Start a project
-                  <ArrowUpRight className="size-4" />
-                </a>
-                <a
-                  href="#services"
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-[var(--radius-ui)] border border-white/25 px-7 py-3.5 text-sm font-medium text-white transition-colors duration-300 hover:border-white sm:w-auto"
-                >
-                  Explore services
-                </a>
-              </div>
-
-              {/* The strip ends with an ASCII hint that there is more below the
-                  fold. Kept on this line so the hero stays exactly one
-                  viewport tall. */}
-              {/* Just the cue. The strip that sat here listed the services a
-                  fourth time (hero, section, menu and footer already carried
-                  them), and the hero is meant to say one thing. */}
-              <p className="mt-10 flex items-center">
-                <span aria-hidden="true" className="scroll-cue">
-                  ↓
-                </span>
-              </p>
+        <figure className="infobox-figure">
+          <GandalfFigure />
+          <figcaption className="mono">gandalf, drawn in characters</figcaption>
+        </figure>
+        <dl className="infobox-facts">
+          {INFO_FACTS.map((fact) => (
+            <div key={fact.key}>
+              <dt>{fact.key}</dt>
+              <dd>{fact.value}</dd>
             </div>
-          </Rise>
-        </div>
-      </div>
-      </div>
-    </section>
-  )
-}
-
-function Services() {
-  const artRef = useParallax<HTMLDivElement>(0.1)
-
-  return (
-    <section
-      id="services"
-      className="flex min-h-svh flex-col justify-center py-28 sm:py-40 lg:py-56"
-    >
-      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
-        <AsciiRule index="01" label="services" />
-        <div className="mt-12 flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
-          <Reveal>
-            <div className="max-w-2xl">
-              <Eyebrow>Services</Eyebrow>
-              <h2 className="display mt-5 text-[clamp(1.6rem,4.6vw,3.5rem)]">
-                <AsciiDecode text="One contract." />
-                <br />
-                <span className="text-[var(--body)]">
-                  <AsciiDecode text="One point of contact." delay={120} />
-                </span>
-              </h2>
-            </div>
-          </Reveal>
-
-          <Reveal delay={140}>
-            <GandalfFigure />
-          </Reveal>
-        </div>
-
-        <div className="mt-16 grid grid-cols-1 gap-x-16 gap-y-16 lg:grid-cols-2">
-          <Reveal delay={80}>
-            <div>
-              <div className="flex items-baseline justify-between border-b border-[var(--ink)] pb-3">
-                <h3 className="text-lg font-medium tracking-[-0.02em]">
-                  We design and build
-                </h3>
-                <span className="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
-                  Software
-                </span>
-              </div>
-              <ul className="mt-2">
-                {BUILD_ITEMS.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-baseline gap-4 py-3 text-base text-[var(--ink-soft)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="shrink-0 font-mono text-[var(--faint-dim)]"
-                    >
-                      &gt;
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5 text-base leading-relaxed text-[var(--faint)]">
-                Interfaces that stay legible, code that stays maintainable, and
-                a deploy you can repeat without drama.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={180}>
-            <div>
-              <div className="flex items-baseline justify-between border-b border-[var(--ink)] pb-3">
-                <h3 className="text-lg font-medium tracking-[-0.02em]">
-                  We run and maintain
-                </h3>
-                <span className="font-mono text-[0.6875rem] tracking-[0.2em] text-[var(--faint-dim)] uppercase">
-                  Infrastructure
-                </span>
-              </div>
-              <ul className="mt-2">
-                {HOST_ITEMS.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-baseline gap-4 py-3 text-base text-[var(--ink-soft)]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="shrink-0 font-mono text-[var(--faint-dim)]"
-                    >
-                      &gt;
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-5 text-base leading-relaxed text-[var(--faint)]">
-                Everything registered in your name, renewals tracked, and a
-                certificate that never surprises you at 3am.
-              </p>
-            </div>
-          </Reveal>
-        </div>
-
-        {/* A live piece from the ASCII Magic library, redrawn in the site's own
-            ink with `mono` so it sits inside the palette instead of importing
-            its own.
-
-            Deliberately FULL WIDTH: it is the section's centrepiece and the
-            page's one large picture. Tried flanking it with the capability
-            panels to close the band the inspector scores as empty — it made the
-            drawing smaller, dimmer and clipped, and did not close the band
-            anyway, because a canvas is not content to the meter however large
-            it is. Accepted deviation, stated in the report. */}
-        <Reveal delay={220}>
-          <div className="svc-art bleed mt-14" ref={artRef}>
-            {/* Sits over the top of the constellation, which the mask has
-                already faded to black there, so the word needs no scrim. It
-                lives outside .svc-art-stage so the mask can't fade it too. */}
-            <span aria-hidden="true" className="svc-art-word">
-              GANDALF
-            </span>
-            <div className="svc-art-stage">
-              <AsciiArt
-                piece="lorenz-attractor"
-                sizes={{ base: 7, sm: 11, md: 13, lg: 18, xl: 22 }}
-                speed={0.8}
-                label="An animated Lorenz attractor traced in characters"
-              />
-            </div>
-          </div>
-        </Reveal>
-      </div>
-    </section>
-  )
-}
-
-function Process() {
-  // Group the stages under the time headings that carry their order.
-  const groups = PROCESS.reduce<{ when: string; rows: typeof PROCESS }[]>(
-    (acc, step) => {
-      const last = acc[acc.length - 1]
-      if (last && last.when === step.when) last.rows.push(step)
-      else acc.push({ when: step.when, rows: [step] })
-      return acc
-    },
-    []
-  )
-
-  return (
-    <section
-      id="process"
-      className="flex min-h-svh flex-col justify-center py-28 sm:py-40 lg:py-56"
-    >
-      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 sm:px-8">
-        <AsciiRule index="02" label="process" />
-        <div className="mt-12 grid gap-12 lg:grid-cols-[1fr_0.85fr] lg:items-start lg:gap-16">
-          <Reveal>
-            <div>
-              <Eyebrow>Process</Eyebrow>
-              <h2 className="display mt-5 text-[clamp(2.5rem,4.4vw,4.25rem)]">
-                <AsciiDecode text="How the work" />
-                <br />
-                <span className="text-[var(--muted)]">
-                  <AsciiDecode text="happens." delay={120} />
-                </span>
-              </h2>
-              <p className="mt-7 max-w-[30ch] text-[1.125rem] leading-relaxed text-[var(--body)]">
-                Four stages, each with something concrete to show for it. You
-                always know where the project stands.
-              </p>
-            </div>
-          </Reveal>
-
-          <Reveal delay={140}>
-            <div>
-              <div className="slip">
-                <p className="label-small">Statement of work</p>
-
-                {groups.map((group) => (
-                  <div key={group.when} className="slip-group">
-                    <h3 className="slip-when">{group.when}</h3>
-                    {group.rows.map((row) => (
-                      <div key={row.title} className="slip-line">
-                        <div className="slip-row">
-                          <span className="slip-what">{row.title}</span>
-                          <span aria-hidden="true" className="slip-leader" />
-                          <span className="slip-value">{row.takes}</span>
-                        </div>
-                        {/* The note sits under the row, not inside its left cell:
-                            inside, it fills the row and the leader has no gap
-                            left to stretch into. */}
-                        <p className="slip-note">{row.body}</p>
-                      </div>
-                    ))}
-                  </div>
-                ))}
-
-                {/* The inverted final row: what the reader holds at the end. */}
-                <div className="slip-total">
-                  <span>A live site, monitored and backed up</span>
-                  <span>4–8 weeks</span>
-                </div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Principles() {
-  return (
-    <section className="relative flex min-h-svh flex-col justify-center overflow-hidden bg-[var(--surface)]">
-      {/* The same ripple drawing as the hero, in nothing but light grey here. */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-80 [mask-image:radial-gradient(75%_65%_at_50%_45%,black,transparent_95%)]"
-      >
-        {/* Drifts at a quarter of the base rate — barely moving, on purpose. */}
-        <AsciiHero mode="field" fps={10} speed={0.25} {...GREY_FIELD} />
-      </div>
-
-      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-40 lg:py-56">
-        <AsciiRule index="03" label="principles" />
-        <Reveal>
-          <h2 className="display mt-12 max-w-4xl text-[clamp(1.5rem,4.4vw,3.25rem)]">
-            <AsciiDecode text="One team, from the first commit to the renewal date." />
-          </h2>
-        </Reveal>
-
-        <div className="mt-14 grid grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
-          {PRINCIPLES.map((item, i) => (
-            <Reveal key={item.title} delay={i * 100}>
-              <div className="bleed border-t border-[var(--ink)] px-5 pt-5 sm:px-0">
-                <h3 className="text-[1.05rem] font-medium tracking-[-0.02em]">
-                  {item.title}
-                </h3>
-                <p className="mt-3 text-base leading-relaxed text-[var(--muted)]">
-                  {item.body}
-                </p>
-              </div>
-            </Reveal>
           ))}
+        </dl>
+        <div className="infobox-action">
+          <a href={PROJECT_MAIL} className="btn btn-block">
+            Start a project
+            <ArrowUpRight className="size-4" />
+          </a>
         </div>
       </div>
-    </section>
+    </aside>
   )
 }
 
-/**
- * The contact section as display rows, per the direction sheet's blueprint: a
- * stack of full-width bands, each pairing what the reader does with what they
- * get, told apart by alternating tones rather than by rules.
- */
-const CONTACT_ROWS = [
-  { key: "Write to us", value: EMAIL, href: `mailto:${EMAIL}` },
-  {
-    key: "Tell us the shape",
-    value: "What it does, who it's for, roughly when",
-  },
-  { key: "We reply", value: "Usually within one business day" },
-  { key: "Hosted elsewhere", value: "We can migrate it" },
-]
+/* -------------------------------------------------------------------------- */
+/* Page                                                                       */
+/* -------------------------------------------------------------------------- */
 
-function Contact() {
+function Cover() {
   return (
-    <section
-      id="contact"
-      className="relative flex min-h-svh flex-col justify-center overflow-hidden"
-    >
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 opacity-50 [mask-image:radial-gradient(65%_60%_at_78%_34%,black,transparent_92%)]"
-      >
-        <AsciiHero mode="field" fps={10} {...SECTION_FIELD} />
+    <div id="top" className="cover">
+      <div aria-hidden="true" className="absolute inset-0">
+        <AsciiHero mode="field" fps={12} speed={0.6} />
       </div>
+      <p aria-hidden="true" className="cover-path mono">
+        ~/gandalf/wiki
+      </p>
+    </div>
+  )
+}
 
-      <div className="relative mx-auto w-full min-w-0 max-w-[1200px] px-5 py-20 sm:px-8 sm:py-40 lg:py-56">
-        <AsciiRule index="04" label="contact" />
+function ArticleHead() {
+  return (
+    <header id="overview" className="wiki-head">
+      <p className="crumbs mono">
+        <span>gandalf</span>
+        <span aria-hidden="true">/</span>
+        <span>studio</span>
+        <span aria-hidden="true">/</span>
+        <span>overview</span>
+      </p>
+      <h1 className="wiki-title">
+        <AsciiDecode text="Gandalf" duration={900} delay={150} />
+      </h1>
+      <ul className="wiki-meta mono">
+        <li>software studio</li>
+        <li>websites &amp; applications</li>
+        <li>domains &amp; hosting</li>
+      </ul>
+      <p className="wiki-lede">
+        <strong>Gandalf</strong> is a software studio that designs and builds
+        websites and applications, then keeps them online. Domains, SSL
+        certificates, business email and cPanel hosting are handled by the same
+        team, under one contract and one point of contact.
+      </p>
+    </header>
+  )
+}
+
+function ArticleBody() {
+  const [lead, ...rest] = PRINCIPLES
+
+  return (
+    <article className="wiki-body prose">
+      <section className="wiki-section" aria-labelledby="services">
+        <Heading id="services" level={2}>
+          Services
+        </Heading>
+        <p>
+          The work splits into two halves: building the software, and running
+          the infrastructure underneath it. Both sit under the same contract, so
+          the people who wrote the code are the people who renew the
+          certificate.
+        </p>
+
+        <Heading id="build" level={3}>
+          Build
+        </Heading>
+        <List items={BUILD_ITEMS} />
+        <p className="note">
+          Interfaces that stay legible, code that stays maintainable, and a
+          deploy you can repeat without drama.
+        </p>
+
+        <Heading id="run" level={3}>
+          Run
+        </Heading>
+        <List items={RUN_ITEMS} />
+        <p className="note">
+          Everything registered in your name, renewals tracked, and a
+          certificate that never surprises you at 3am.
+        </p>
 
         <Reveal>
-          <h2 className="display mt-12 text-[clamp(2.5rem,5vw,4.5rem)]">
-            <AsciiDecode text="Tell us what" />
-            <br />
-            <span className="text-[var(--muted)]">
-              <AsciiDecode text="you're building." delay={120} />
-            </span>
-          </h2>
+          <figure className="fig">
+            <div className="fig-art">
+              <span aria-hidden="true" className="fig-word">
+                GANDALF
+              </span>
+              <div className="fig-stage">
+                <AsciiArt
+                  piece="lorenz-attractor"
+                  mono
+                  sizes={{ base: 6, sm: 9, md: 10, lg: 11, xl: 12 }}
+                  speed={0.7}
+                  label="An animated Lorenz attractor traced in characters"
+                />
+              </div>
+            </div>
+            <figcaption className="mono">
+              <b>fig. 1</b> — a lorenz attractor, traced live in ascii
+              characters: structure rendered as text.
+            </figcaption>
+          </figure>
         </Reveal>
+      </section>
 
-        <div className="mt-14">
-          {CONTACT_ROWS.map((row, i) => (
-            <Reveal key={row.key} delay={i * 80}>
-              {row.href ? (
-                <a href={row.href} className={`contact-row${i % 2 ? " contact-row-alt" : ""} group`}>
-                  <span className="contact-key">{row.key}</span>
-                  <span className="contact-value">
-                    <span className="link-underline">{row.value}</span>
-                  </span>
-                </a>
-              ) : (
-                <div className={`contact-row${i % 2 ? " contact-row-alt" : ""}`}>
-                  <span className="contact-key">{row.key}</span>
-                  <span className="contact-value">{row.value}</span>
-                </div>
-              )}
-            </Reveal>
-          ))}
-        </div>
-
-        {/* The greeting row: one word at display size, with a solid round
-            button carrying the arrow — the sheet's sixth row. */}
-        <Reveal delay={340}>
-          <div className="mt-12 flex items-center gap-7">
-            <span className="display text-[clamp(2rem,4.4vw,3.75rem)]">
-              Hello
-            </span>
-            <a
-              href={`mailto:${EMAIL}`}
-              aria-label={`Email ${EMAIL}`}
-              className="contact-orb"
-            >
-              <ArrowUpRight className="size-5" />
-            </a>
+      <section className="wiki-section" aria-labelledby="process">
+        <Heading id="process" level={2}>
+          Process
+        </Heading>
+        <p>
+          Four stages, each with something concrete to show for it, so you
+          always know where the project stands.
+        </p>
+        <Reveal>
+          <div className="table-wrap">
+            <table className="wiki-table">
+              <thead>
+                <tr>
+                  <th scope="col">stage</th>
+                  <th scope="col">when</th>
+                  <th scope="col">duration</th>
+                  <th scope="col">what you get</th>
+                </tr>
+              </thead>
+              <tbody>
+                {PROCESS.map((row) => (
+                  <tr key={row.stage}>
+                    <th scope="row">{row.stage}</th>
+                    <td className="when">{row.when}</td>
+                    <td className="num">{row.takes}</td>
+                    <td>{row.outcome}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row">total</th>
+                  <td />
+                  <td className="num">4–8 weeks</td>
+                  <td>A live site, monitored and backed up.</td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
         </Reveal>
-      </div>
-    </section>
+      </section>
+
+      <section className="wiki-section" aria-labelledby="principles">
+        <Heading id="principles" level={2}>
+          Principles
+        </Heading>
+        <p>One team, from the first commit to the renewal date.</p>
+        <dl className="defs">
+          {[lead, ...rest].map((item) => (
+            <div key={item.title}>
+              <dt>{item.title}</dt>
+              <dd>{item.body}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section className="wiki-section" aria-labelledby="contact">
+        <Heading id="contact" level={2}>
+          Contact
+        </Heading>
+        <p>
+          Tell us what you're building — what it does, who it's for and roughly
+          when. If it's hosted somewhere else already, we can migrate it.
+        </p>
+        <a href={PROJECT_MAIL} className="contact-mail">
+          <span className="contact-addr">{EMAIL}</span>
+          <span aria-hidden="true" className="caret" />
+        </a>
+        <p className="note">Usually answered within one business day.</p>
+      </section>
+    </article>
   )
 }
 
@@ -701,112 +515,48 @@ function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="relative">
-      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 pt-16 sm:px-8 sm:pt-20">
-        <AsciiRule index="05" label="gandalf" />
-
-        {/* The drawn wordmark, kept from the ASCII theme, sits in the top row
-            where the direction sheet asks for it — small, not as the close. */}
-        <pre aria-hidden="true" className="ascii-wordmark mt-12">
+    <footer className="site-footer">
+      <div className="footer-inner">
+        <pre aria-hidden="true" className="ascii-wordmark">
           {WORDMARK}
         </pre>
-
-        <div className="mt-12 grid gap-10 sm:grid-cols-3">
-          <div>
-            <div className="flex items-center gap-2 text-base font-semibold tracking-[-0.02em]">
-              <span
-                aria-hidden="true"
-                className="inline-block size-2.5 bg-[var(--ink)]"
-              />
-              <span>GANDALF</span>
-            </div>
-            <p className="mt-4 max-w-xs text-base leading-relaxed text-[var(--body)]">
-              Software development, domains, SSL, business email and cPanel
-              hosting.
-            </p>
-          </div>
-
-          <div>
-            <p className="label-small">Services</p>
-            <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
-              <li>Websites &amp; apps</li>
-              <li>Domains</li>
-              <li>SSL certificates</li>
-              <li>Email &amp; hosting</li>
-            </ul>
-          </div>
-
-          <div>
-            <p className="label-small">Company</p>
-            <ul className="mt-4 space-y-2.5 text-base text-[var(--body)]">
-              <li>
-                <a href="#process" className="link-underline">
-                  Process
-                </a>
-              </li>
-              <li>
-                <a href="#services" className="link-underline">
-                  Services
-                </a>
-              </li>
-              <li>
-                <a href="#contact" className="link-underline">
-                  Contact
-                </a>
-              </li>
-              <li>
-                <a href={`mailto:${EMAIL}`} className="link-underline">
-                  Email us
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* The close: the address itself as the display line, hard against the
-          margin — the direction sheet's "contact as the headline". */}
-      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 pt-20 sm:px-8 sm:pt-28">
-        <a href={`mailto:${EMAIL}`} className="footer-mail">
-          {EMAIL}
-        </a>
-      </div>
-
-      <div className="mx-auto w-full min-w-0 max-w-[1200px] px-5 pt-12 pb-10 sm:px-8">
-        <div className="flex flex-col gap-3 border-t border-[var(--line-soft)] pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex items-center gap-2 text-[0.6875rem] tracking-[0.12em] text-[var(--faint-dim)] uppercase">
-            © {year} Gandalf. All rights reserved.
+        <div className="footer-base">
+          <p>
+            © {year} gandalf
             <span aria-hidden="true" className="cursor-block" />
           </p>
-          <a
-            href="#top"
-            className="link-underline text-[0.6875rem] tracking-[0.12em] text-[var(--faint-dim)] uppercase"
-          >
-            Back to top
-          </a>
+          <nav aria-label="Footer" className="footer-links">
+            <a href="#services">
+              <span className="link-underline">services</span>
+            </a>
+            <a href="#process">
+              <span className="link-underline">process</span>
+            </a>
+            <a href="#contact">
+              <span className="link-underline">contact</span>
+            </a>
+            <a href="#top">
+              <span className="link-underline">top</span>
+            </a>
+          </nav>
         </div>
       </div>
     </footer>
   )
 }
 
-/* -------------------------------------------------------------------------- */
-
 export function App() {
-  // Anchor clicks are scrolled in JS so the duration is capped and headings
-  // clear the sticky header.
   useSmoothAnchors()
 
   return (
-    <div className="min-h-svh bg-[var(--surface)] text-[var(--ink)] antialiased">
+    <div className="min-h-svh bg-[var(--surface)] antialiased">
       <SiteHeader />
-      <AsciiRail />
-      <main>
-        <Hero />
-        <Services />
-        <Process />
-        <Principles />
-        <Contact />
+      <Cover />
+      <main className="wiki">
+        <Contents />
+        <ArticleHead />
+        <Infobox />
+        <ArticleBody />
       </main>
       <Footer />
     </div>
